@@ -1,26 +1,34 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
-import os
-from pynput import keyboard
+if os.name == 'nt':
+    import msvcrt
+
+
+    def getch():
+        return msvcrt.getch().decode()
+else:
+    import sys
+    import tty
+    import termios
+
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+
+
+    def getch():
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
 from tkinter import *
 from tkinter import ttk
-
-# import sys
-# import tty
-# import termios
-
-# fd = sys.stdin.fileno()
-# old_settings = termios.tcgetattr(fd)
-
-
-#def getch():
-#    try:
-#        tty.setraw(sys.stdin.fileno())
-#        ch = sys.stdin.read(1)
-#    finally:
-#        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-#    return ch
-
 
 # ********* DYNAMIXEL Model definition *********
 MY_DXL = 'X_SERIES'
@@ -44,16 +52,16 @@ BAUD_RATE = 57600
 
 # Factory default ID of all DYNAMIXEL is 1
 # For the robotic arm:
-# ID: 0 is the base servo that controls the rotation of the robotic arm
-# ID: 1, 2 are the servos that determine the height and horizontal distance of the gripper end
-# ID: 3 controls the gripper
-DXL0_ID = 0
+# ID: 1 is the base servo that controls the rotation of the robotic arm
+# ID: 2, 3 are the servos that determine the height and horizontal distance of the gripper end
+# ID: 4 controls the gripper
 DXL1_ID = 1
 DXL2_ID = 2
+DXL3_ID = 3
 
 # Use the actual port assigned to the U2D2
 # Linux: "/dev/ttyUSB*"
-DEVICE_NAME = '/dev/ttyUSB0'
+DEVICE_NAME = "/dev/ttyUSB0"
 
 TORQUE_ENABLE = 1  # Value for enabling the torque
 TORQUE_DISABLE = 0  # Value for disabling the torque
@@ -97,7 +105,7 @@ else:
 
 # Enable Dynamixel Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(
-    portHandler, DXL0_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
@@ -129,7 +137,7 @@ def Down(motor_id):
 
 def RotateLeft():
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(
-        portHandler, DXL0_ID, ADDR_GOAL_VELOCITY, -dxl0_goal_velocity)
+        portHandler, DXL1_ID, ADDR_GOAL_VELOCITY, -dxl0_goal_velocity)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -138,7 +146,7 @@ def RotateLeft():
 
 def RotateRight():
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(
-        portHandler, DXL0_ID, ADDR_GOAL_VELOCITY, dxl0_goal_velocity)
+        portHandler, DXL1_ID, ADDR_GOAL_VELOCITY, dxl0_goal_velocity)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -169,7 +177,7 @@ def stop_moving(event, motor_id):
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
-        print("motor" + motor_id + "stop")
+        print("motor" + str(motor_id) + "stop")
 
 
 root = Tk()
@@ -180,9 +188,9 @@ frm.grid()
 ttk.Label(frm, text="control robotic arm").grid(row=1, column=0)
 
 # this will create a label widget
-l1 = Label(root, text="DYN0:")
-l2 = Label(root, text="DYN1:")
-l3 = Label(root, text="DYN2:")
+l1 = Label(root, text="DYN1:")
+l2 = Label(root, text="DYN2:")
+l3 = Label(root, text="DYN3:")
 
 # grid method to arrange labels in respective
 # rows and columns as specified
@@ -208,20 +216,20 @@ DownDYN2Btn.grid(row=2, column=2, pady=2)
 ttk.Label(frm, text="\n").grid(column=1, row=3)
 ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=4)
 
-UpDYN1Btn.bind('<ButtonPress-1>', start_up(motor_id=DXL1_ID))
-UpDYN1Btn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL1_ID))
-UpDYN2Btn.bind('<ButtonPress-1>', start_up(motor_id=DXL2_ID))
-UpDYN2Btn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL2_ID))
+UpDYN1Btn.bind('<ButtonPress-1>', start_up(event=NONE, motor_id=DXL2_ID))
+UpDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL2_ID))
+UpDYN2Btn.bind('<ButtonPress-1>', start_up(event=NONE, motor_id=DXL3_ID))
+UpDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL3_ID))
 
-DownDYN1Btn.bind('<ButtonPress-1>', start_down(motor_id=DXL1_ID))
-DownDYN1Btn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL1_ID))
-DownDYN2Btn.bind('<ButtonPress-1>', start_down(motor_id=DXL2_ID))
-DownDYN2Btn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL2_ID))
+DownDYN1Btn.bind('<ButtonPress-1>', start_down(event=NONE, motor_id=DXL2_ID))
+DownDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL2_ID))
+DownDYN2Btn.bind('<ButtonPress-1>', start_down(event=NONE, motor_id=DXL3_ID))
+DownDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL3_ID))
 
 RotateLeftBtn.bind('<ButtonPress-1>', start_rotate_left)
-RotateLeftBtn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL0_ID))
+RotateLeftBtn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL1_ID))
 RotateRightBtn.bind('<ButtonPress-1>', start_rotate_right)
-RotateRightBtn.bind('<ButtonRelease-1>', stop_moving(motor_id=DXL0_ID))
+RotateRightBtn.bind('<ButtonRelease-1>', stop_moving(event=NONE, motor_id=DXL1_ID))
 
 # infinite loop which can be terminated by keyboard
 # or mouse interrupt
@@ -229,7 +237,7 @@ mainloop()
 
 # Disable Dynamixel Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(
-    portHandler, DXL0_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+    portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
