@@ -158,23 +158,23 @@ def rotate_right():
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-def start_up(motor):
+def start_up(event, motor):
     up(motor_id)
 
 
-def start_down(motor):
+def start_down(event, motor):
     down(motor_id)
 
 
-def start_rotate_left():
+def start_rotate_left(event):
     rotate_left()
 
 
-def start_rotate_right():
+def start_rotate_right(event):
     rotate_right()
 
 
-def stop_moving(motor):
+def stop_moving(event, motor):
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(
         portHandler, motor_id, ADDR_GOAL_POSITION, 0)
     if dxl_comm_result != COMM_SUCCESS:
@@ -224,30 +224,30 @@ ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=4)
 # Enable button pressing for Dynamixel motor 1
 # Rotate left
 RotateLeftBtn.bind('<ButtonPress-1>', start_rotate_left)
-RotateLeftBtn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[0]))
+RotateLeftBtn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[0]))
 # Rotate right
 RotateRightBtn.bind('<ButtonPress-1>', start_rotate_right)
-RotateRightBtn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[0]))
+RotateRightBtn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[0]))
 
 # Enable button pressing for Dynamixel motor 2
 # Moving up
-UpDYN1Btn.bind('<ButtonPress-1>', start_up(motor=DXL_ID[1]))
-UpDYN1Btn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[1]))
+UpDYN1Btn.bind('<ButtonPress-1>', start_up(event=None, motor=DXL_ID[1]))
+UpDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[1]))
 
 # Enable button pressing for Dynamixel motor 2
 # Moving down
-DownDYN1Btn.bind('<ButtonPress-1>', start_down(motor=DXL_ID[1]))
-DownDYN1Btn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[1]))
+DownDYN1Btn.bind('<ButtonPress-1>', start_down(event=None, motor=DXL_ID[1]))
+DownDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[1]))
 
 # Enable button pressing for Dynamixel motor 3
 # Moving up
-UpDYN2Btn.bind('<ButtonPress-1>', start_up(motor=DXL_ID[2]))
-UpDYN2Btn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[2]))
+UpDYN2Btn.bind('<ButtonPress-1>', start_up(event=None, motor=DXL_ID[2]))
+UpDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[2]))
 
 # Enable button pressing for Dynamixel motor 3
 # Moving down
-DownDYN2Btn.bind('<ButtonPress-1>', start_down(motor=DXL_ID[2]))
-DownDYN2Btn.bind('<ButtonRelease-1>', stop_moving(motor=DXL_ID[2]))
+DownDYN2Btn.bind('<ButtonPress-1>', start_down(event=None, motor=DXL_ID[2]))
+DownDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[2]))
 
 # infinite loop which can be terminated by keyboard
 # or mouse interrupt
