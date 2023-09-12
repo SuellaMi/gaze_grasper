@@ -1,5 +1,6 @@
 import tkinter as tk
-import Arm_Controller
+
+from Arm_Controller import start_moving
 
 # Initialize window
 root = tk.Tk()
@@ -34,11 +35,18 @@ field1.grid(row=1, column=1)
 field2.grid(row=2, column=1)
 field3.grid(row=3, column=1)
 
+
+# Function to get the entries
+def get_degrees():
+    degrees = [int(field1.get()), int(field2.get()), int(field3.get())]
+    return degrees
+
+
 # Create OK button to start movement
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
 # Call moving function
-MovingBtn.bind('<ButtonPress-1>', Arm_Controller.start_moving)
+MovingBtn.bind('<ButtonPress-1>', start_moving)
 
 tk.Button(root, text="Quit", command=root.destroy).grid(column=1, row=4)
 

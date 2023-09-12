@@ -1,9 +1,10 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from GUI import field1, field2, field3
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
+
+from GUI import get_degrees
 
 if os.name == 'nt':
     import msvcrt
@@ -132,9 +133,8 @@ def moving(motor_id, degree):
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to bet done
 # Checks input number
 def start_moving(event):
-    degrees = [int(field1.get()), int(field2.get()), int(field3.get())]
     for motor in DXL_ID:
-        moving(motor, degrees[motor])
+        moving(motor, get_degrees()[motor-1])
 
 
 # Disable Dynamixel Torque for each motor
