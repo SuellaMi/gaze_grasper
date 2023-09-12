@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import GUI
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -26,9 +27,6 @@ else:
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
-
-from tkinter import *
-from tkinter import ttk
 
 # ********* DYNAMIXEL Model definition *********
 
@@ -120,135 +118,24 @@ def set_goal_position(motor, degree):
     return result, error
 
 
-# Control moving by button GUI
-# Close by Quit button
-# Different functions for GUI interaction
-def up(motor):
-    dxl_comm_result, dxl_error = set_goal_position(motor, 1)
+# Moving function
+def moving(motor_id, degree):
+    dxl_comm_result, dxl_error = set_goal_position(motor_id, degree)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-def down(motor):
-    dxl_comm_result, dxl_error = set_goal_position(motor, -1)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
+# The event that triggers the arm to move
+# Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to bet done
+# Checks input number
+def start_moving(event):
+    degrees = [int(GUI.field1.get()), int(GUI.field2.get()), int(GUI.field3.get())]
+    for motor in DXL_ID:
+        moving(motor, degrees[motor])
 
-
-def rotate_left():
-    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], 180)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-
-
-def rotate_right():
-    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], 90)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-
-
-def start_up(event, motor):
-    up(motor_id)
-
-
-def start_down(event, motor):
-    down(motor_id)
-
-
-def start_rotate_left(event):
-    rotate_left()
-
-
-def start_rotate_right(event):
-    rotate_right()
-
-
-def stop_moving(event, motor):
-    dxl_comm_result, dxl_error = set_goal_position(motor, 0)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-    else:
-        print("Dynamixel motor:" + str(motor) + "stopped moving.")
-
-
-root = Tk()
-
-frm = ttk.Frame(root)
-frm.grid()
-
-
-ttk.Label(frm, text="control robotic arm").grid(row=0, column=0)
-
-# this will create a label widget
-l1 = Label(root, text="DXL1:")
-l2 = Label(root, text="DXL2:")
-l3 = Label(root, text="DXL3:")
-
-# grid method to arrange labels in respective
-# rows and columns as specified
-l1.grid(row=1, column=0)
-l2.grid(row=2, column=0)
-l3.grid(row=3, column=0)
-
-RotateLeftBtn = ttk.Button(frm, text="Left")
-RotateLeftBtn.grid(row=1, column=1)
-RotateRightBtn = ttk.Button(frm, text="Right")
-RotateRightBtn.grid(row=1, column=2)
-
-UpDYN1Btn = ttk.Button(frm, text="Up")
-UpDYN1Btn.grid(row=2, column=1)
-DownDYN1Btn = ttk.Button(frm, text="Down")
-DownDYN1Btn.grid(row=2, column=2)
-
-UpDYN2Btn = ttk.Button(frm, text="Up")
-UpDYN2Btn.grid(row=3, column=1)
-DownDYN2Btn = ttk.Button(frm, text="Down")
-DownDYN2Btn.grid(row=3, column=2)
-
-ttk.Label(frm, text="\n").grid(column=1, row=3)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=4)
-
-# Enable button pressing for Dynamixel motor 1
-# Rotate left
-RotateLeftBtn.bind('<ButtonPress-1>', start_rotate_left)
-RotateLeftBtn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[0]))
-# Rotate right
-RotateRightBtn.bind('<ButtonPress-1>', start_rotate_right)
-RotateRightBtn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[0]))
-
-# Enable button pressing for Dynamixel motor 2
-# Moving up
-UpDYN1Btn.bind('<ButtonPress-1>', start_up(event=None, motor=DXL_ID[1]))
-UpDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[1]))
-
-# Enable button pressing for Dynamixel motor 2
-# Moving down
-DownDYN1Btn.bind('<ButtonPress-1>', start_down(event=None, motor=DXL_ID[1]))
-DownDYN1Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[1]))
-
-# Enable button pressing for Dynamixel motor 3
-# Moving up
-UpDYN2Btn.bind('<ButtonPress-1>', start_up(event=None, motor=DXL_ID[2]))
-UpDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[2]))
-
-# Enable button pressing for Dynamixel motor 3
-# Moving down
-DownDYN2Btn.bind('<ButtonPress-1>', start_down(event=None, motor=DXL_ID[2]))
-DownDYN2Btn.bind('<ButtonRelease-1>', stop_moving(event=None, motor=DXL_ID[2]))
-
-# infinite loop which can be terminated by keyboard
-# or mouse interrupt
-mainloop()
 
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
