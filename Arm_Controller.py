@@ -110,7 +110,7 @@ def change_to_degrees(data):
 # Helper function, to set a new position for the robotic arm
 def set_goal_position(motor, data):
     # Converts degrees back to the data that is readable by the dynamixel
-    position_val = int((data * 4095) / 360)
+    position_val = int((data * 4095.0) / 360.0)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, position_val)
     return result, error
 
@@ -186,7 +186,7 @@ field3.grid(row=3, column=1)
 
 # Function to get the entries
 def get_degrees():
-    degrees = [int(field1.get()), int(field2.get()), int(field3.get())]
+    degrees = [float(field1.get()), float(field2.get()), float(field3.get())]
     return degrees
 
 
