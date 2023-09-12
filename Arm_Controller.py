@@ -99,6 +99,20 @@ else:
     getch()
     quit()
 
+
+# Helper function, to map the dynamixel data to degrees
+def change_to_degrees(data):
+    data = int((data * 4095) / 360)
+    return data
+
+
+# Helper function, to set a new position for the robotic arm
+def set_goal_position(motor, data):
+    position_val = change_to_degrees(data)
+    result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, position_val)
+    return result, error
+
+
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
@@ -110,20 +124,15 @@ for motor_id in DXL_ID:
     else:
         # Read in initial position of motors
         present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor_id, ADDR_PRESENT_POSITION)
-        print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.\n")
+        # Change the data into degrees
+        present_position = change_to_degrees(present_position)
+        print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.")
         print("The current position is:" + str(present_position))
 
 
-# Helper function, to map the input value to the real world position
-def set_goal_position(motor, degree):
-    position_val = int((degree * 4095) / 360)
-    result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, position_val)
-    return result, error
-
-
 # Moving function
-def moving(motor_id, degree):
-    dxl_comm_result, dxl_error = set_goal_position(motor_id, degree)
+def moving(motor_id, data):
+    dxl_comm_result, dxl_error = set_goal_position(motor_id, data)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -132,13 +141,14 @@ def moving(motor_id, degree):
 
 # The event that triggers the arm to move
 # Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to bet done
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to be done
 # Checks input number
 def start_moving(event):
     for motor in DXL_ID:
         moving(motor, get_degrees()[motor - 1])
 
 
+# ......................................... Here starts the GUI.........................................
 # Initialize window
 root = tk.Tk()
 
