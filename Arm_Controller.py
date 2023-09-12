@@ -101,8 +101,9 @@ else:
 
 
 # Helper function, to map the dynamixel data to degrees
+# Given in float, rounded down to two digits
 def change_to_degrees(data):
-    degrees = float((data * 360.0) / 4095.0)
+    degrees = round(float((data * 360.0) / 4095.0), 2)
     return degrees
 
 
