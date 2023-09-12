@@ -102,13 +102,14 @@ else:
 
 # Helper function, to map the dynamixel data to degrees
 def change_to_degrees(data):
-    data = int((data * 4095) / 360)
-    return data
+    degrees = float((data * 360.0) / 4095.0)
+    return degrees
 
 
 # Helper function, to set a new position for the robotic arm
 def set_goal_position(motor, data):
-    position_val = change_to_degrees(data)
+    # Converts degrees back to the data that is readable by the dynamixel
+    position_val = int((data * 4095) / 360)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, position_val)
     return result, error
 
