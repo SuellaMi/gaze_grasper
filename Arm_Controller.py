@@ -140,7 +140,7 @@ def down(motor):
 
 
 def rotate_left():
-    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], -1)
+    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], 180)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -148,7 +148,7 @@ def rotate_left():
 
 
 def rotate_right():
-    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], 1)
+    dxl_comm_result, dxl_error = set_goal_position(DXL_ID[0], 90)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
