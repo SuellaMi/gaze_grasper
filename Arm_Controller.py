@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import GUI
+from GUI import field1, field2, field3
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -108,7 +108,7 @@ for motor_id in DXL_ID:
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
-        print("Dynamixel motor:" + str(motor_id) + "has been successfully connected")
+        print("Dynamixel motor:" + str(motor_id) + " has been successfully connected")
 
 
 # Helper function, to map the input value to the real world position
@@ -132,7 +132,7 @@ def moving(motor_id, degree):
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to bet done
 # Checks input number
 def start_moving(event):
-    degrees = [int(GUI.field1.get()), int(GUI.field2.get()), int(GUI.field3.get())]
+    degrees = [int(field1.get()), int(field2.get()), int(field3.get())]
     for motor in DXL_ID:
         moving(motor, degrees[motor])
 
