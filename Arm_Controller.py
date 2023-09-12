@@ -1,6 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-import s
+import os
 import tkinter as tk
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
