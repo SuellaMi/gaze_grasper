@@ -42,9 +42,6 @@ ADDR_PRESENT_POSITION = 132
 ADDR_PRESENT_VELOCITY = 128
 ADDR_OPERATING_MODE = 11
 ADDR_GOAL_VELOCITY = 104
-GOAL_VELOCITY1 = 80  # max: 265
-GOAL_VELOCITY2 = 80  # max: 265
-GOAL_VELOCITY3 = 80  # max: 265
 # Refer to the Minimum Position Limit of product eManual
 DXL_MINIMUM_POSITION_VALUE = 0
 # Refer to the Maximum Position Limit of product eManual
@@ -143,11 +140,17 @@ def moving(motor_id, data):
 
 # The event that triggers the arm to move
 # Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Checks still have to be done
-# Checks input number
+# Checks if input is outside expected boundaries
 def start_moving(event):
     for motor in DXL_ID:
-        moving(motor, get_degrees()[motor - 1])
+        current_degree = get_degrees()[motor - 1]
+        if (motor == 1) and ((current_degree < 90.0) or (current_degree > 270.0)):
+            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
+        if (motor == 2) and ((current_degree < 0.0) or (current_degree > 180.0)):
+            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
+        if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
+            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
+        moving(motor, current_degree)
 
 
 # ......................................... Here starts the GUI.........................................
