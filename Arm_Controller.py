@@ -108,7 +108,10 @@ for motor_id in DXL_ID:
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
-        print("Dynamixel motor:" + str(motor_id) + " has been successfully connected")
+        # Read in initial position of motors
+        present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor_id, ADDR_PRESENT_POSITION)
+        print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.\n")
+        print("The current position is:" + str(present_position))
 
 
 # Helper function, to map the input value to the real world position
@@ -152,7 +155,6 @@ l3.grid(row=2, column=0)
 l4.grid(row=3, column=0)
 
 # Create first entry field
-# Call variablenname.get() to get the degrees
 entry1 = tk.StringVar()
 field1 = tk.Entry(root, textvariable=entry1)
 
