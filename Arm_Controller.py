@@ -146,7 +146,7 @@ def start_moving(event):
         current_degree = get_degrees()[motor - 1]
         if (motor == 1) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
-        if (motor == 2) and ((current_degree < 0.0) or (current_degree > 180.0)):
+        if (motor == 2) and ((current_degree < 0.0) or (current_degree > 185.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
         if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
