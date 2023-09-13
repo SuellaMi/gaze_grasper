@@ -138,19 +138,33 @@ def moving(motor_id, data):
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
+def set_speed(motor_id, new_velocity):
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, motor_id, ADDR_GOAL_VELOCITY, new_velocity)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+
+
 # The event that triggers the arm to move
 # Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
 # Checks if input is outside expected boundaries
 def start_moving(event):
+    velocity = get_velocity()
     for motor in DXL_ID:
+        # Get the input degrees and make it readable for dynamixel motors
         current_degree = get_degrees()[motor - 1]
+        # Throw error messages if input is out of boundaries
         if (motor == 1) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
         if (motor == 2) and ((current_degree < 0.0) or (current_degree > 185.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
         if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
+        # Set new positions for each motor
         moving(motor, current_degree)
+        # Set velocity
+        set_speed(motor, velocity)
 
 
 # ......................................... Here starts the GUI.........................................
@@ -162,35 +176,48 @@ l1 = tk.Label(root, text="Robotic Arm Controller")
 l2 = tk.Label(root, text="DXL1:")
 l3 = tk.Label(root, text="DXL2:")
 l4 = tk.Label(root, text="DXL3:")
+l5 = tk.Label(root, text="Velocity:")
 
 # Display text in GUI
 l1.grid(row=0, column=0)
 l2.grid(row=1, column=0)
 l3.grid(row=2, column=0)
 l4.grid(row=3, column=0)
+l5.grid(row=4, column=0)
 
-# Create first entry field
+# Create first entry field for DXL1
 entry1 = tk.StringVar()
 field1 = tk.Entry(root, textvariable=entry1)
 
-# Create second entry field
+# Create second entry field for DXL2
 entry2 = tk.StringVar()
 field2 = tk.Entry(root, textvariable=entry2)
 
-# Create third entry field
+# Create third entry field for DXL3
 entry3 = tk.StringVar()
 field3 = tk.Entry(root, textvariable=entry3)
+
+# Create fourth entry field for velocity
+entry4 = tk.StringVar()
+field4 = tk.Entry(root, textvariable=entry4)
 
 # Display entry fields
 field1.grid(row=1, column=1)
 field2.grid(row=2, column=1)
 field3.grid(row=3, column=1)
+field4.grid(row=4, column=1)
 
 
-# Function to get the entries
+# Function to get the degrees entries from the GUI
 def get_degrees():
     degrees = [float(field1.get()), float(field2.get()), float(field3.get())]
     return degrees
+
+
+# Function to get the velocity entry from GUI
+def get_velocity():
+    velocity = float(field4.get())
+    return velocity
 
 
 # Create OK button to start movement
@@ -199,7 +226,7 @@ MovingBtn.grid(row=1, column=2)
 # Call moving function
 MovingBtn.bind('<ButtonPress-1>', start_moving)
 
-tk.Button(root, text="Quit", command=root.destroy).grid(column=1, row=4)
+tk.Button(root, text="Quit", command=root.destroy).grid(row=5, column=1)
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
