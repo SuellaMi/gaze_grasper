@@ -144,7 +144,6 @@ def set_speed():
 
 set_operating_mode(CHANGE_TO_VELOCITY)
 enable_torque()
-set_speed()
 disable_torque()
 set_operating_mode(CHANGE_TO_POSITION)
 enable_torque()
