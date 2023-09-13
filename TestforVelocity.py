@@ -40,6 +40,7 @@ CHANGE_TO_VELOCITY = 1
 CHANGE_TO_POSITION = 3
 ADDR_GOAL_VELOCITY = 104
 ADDR_GOAL_POSITION = 116
+DXL_ID = 1
 
 # Open port
 if portHandler.openPort():
@@ -65,7 +66,7 @@ else:
 def set_degree():
     degree = get_degree()
     position_val = int((degree * 4095.0) / 360.0)
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, 1, ADDR_GOAL_POSITION, position_val)
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, position_val)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -73,7 +74,7 @@ def set_degree():
 
 
 def enable_torque():
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, 1, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -81,7 +82,7 @@ def enable_torque():
 
 
 def disable_torque():
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, 1, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -89,7 +90,7 @@ def disable_torque():
 
 
 def set_operating_mode(mode):
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, 1, ADDR_OPERATING_MODE, mode)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_OPERATING_MODE, mode)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -142,7 +143,7 @@ def get_degree():
 
 def set_speed():
     velocity = get_velocity()
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, 1, ADDR_GOAL_VELOCITY, velocity)
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_VELOCITY, velocity)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
