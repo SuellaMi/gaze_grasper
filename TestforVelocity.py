@@ -155,3 +155,8 @@ MovingBtn.bind('<ButtonPress-1>', start_moving)
 
 tk.Button(root, text="Quit", command=root.destroy).grid(row=5, column=1)
 root.mainloop()
+
+# Close port
+portHandler.closePort()
+
+print("closed")
