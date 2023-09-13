@@ -152,6 +152,9 @@ def set_speed(motor_id, new_velocity):
 def start_moving(event):
     velocity = get_velocity()
     for motor in DXL_ID:
+        # Set velocity
+        set_speed(motor, velocity)
+    for motor in DXL_ID:
         # Get the input degrees and make it readable for dynamixel motors
         current_degree = get_degrees()[motor - 1]
         # Throw error messages if input is out of boundaries
@@ -161,8 +164,6 @@ def start_moving(event):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
         if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
-        # Set velocity
-        set_speed(motor, velocity)
         # Set new positions for each motor
         moving(motor, current_degree)
 
