@@ -216,7 +216,7 @@ def get_degrees():
 
 # Function to get the velocity entry from GUI
 def get_velocity():
-    velocity = float(field4.get())
+    velocity = int(field4.get())
     return velocity
 
 
