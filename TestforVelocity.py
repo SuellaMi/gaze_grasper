@@ -62,16 +62,6 @@ else:
 
 # ..........................................Helper Functions..........................................
 
-
-def set_speed():
-    velocity = get_velocity()
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, 1, ADDR_GOAL_VELOCITY, velocity)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-
-
 def set_degree():
     degree = get_degree()
     position_val = int((degree * 4095.0) / 360.0)
@@ -107,12 +97,6 @@ def set_operating_mode(mode):
 
 
 # ...........................................Code...................................................
-set_operating_mode(CHANGE_TO_VELOCITY)
-enable_torque()
-set_speed()
-disable_torque()
-set_operating_mode(CHANGE_TO_POSITION)
-enable_torque()
 
 
 def start_moving(event):
@@ -148,6 +132,22 @@ def get_degree():
     degree = float(field1.get())
     return degree
 
+
+def set_speed():
+    velocity = get_velocity()
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, 1, ADDR_GOAL_VELOCITY, velocity)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+
+
+set_operating_mode(CHANGE_TO_VELOCITY)
+enable_torque()
+set_speed()
+disable_torque()
+set_operating_mode(CHANGE_TO_POSITION)
+enable_torque()
 
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
