@@ -100,7 +100,14 @@ def set_operating_mode(mode):
 
 
 def start_moving(event):
+    set_operating_mode(CHANGE_TO_VELOCITY)
+    enable_torque()
+    set_speed()
+    disable_torque()
+    set_operating_mode(CHANGE_TO_POSITION)
     set_degree()
+    enable_torque()
+    disable_torque()
 
 
 disable_torque()
@@ -142,11 +149,6 @@ def set_speed():
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-set_operating_mode(CHANGE_TO_VELOCITY)
-enable_torque()
-disable_torque()
-set_operating_mode(CHANGE_TO_POSITION)
-enable_torque()
 
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
