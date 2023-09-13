@@ -40,7 +40,6 @@ ADDR_TORQUE_ENABLE = 64
 ADDR_GOAL_POSITION = 116
 ADDR_PRESENT_POSITION = 132
 ADDR_PRESENT_VELOCITY = 128
-ADDR_OPERATING_MODE = 11
 ADDR_GOAL_VELOCITY = 104
 # Refer to the Minimum Position Limit of product eManual
 DXL_MINIMUM_POSITION_VALUE = 0
@@ -62,7 +61,10 @@ DEVICE_NAME = "/dev/ttyUSB0"
 TORQUE_ENABLE = 1  # Value for enabling the torque
 TORQUE_DISABLE = 0  # Value for disabling the torque
 DXL_MOVING_STATUS_THRESHOLD = 20  # Dynamixel moving status threshold
-CHANGE_TO_VELOCITY = 1
+
+ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
+CHANGE_TO_VELOCITY = 1  # Velocity Control Mode
+CHANGE_TO_POSITION = 3  # Position Control Mode
 
 # Define goal positions [0, 4095]
 dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,
@@ -131,6 +133,14 @@ for motor_id in DXL_ID:
 
 # Moving function
 def moving(motor_id, data):
+    # Change operating mode (3 for Position Control Mode)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
+                                                              CHANGE_TO_POSITION)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    # Set position
     dxl_comm_result, dxl_error = set_goal_position(motor_id, data)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
@@ -139,6 +149,14 @@ def moving(motor_id, data):
 
 
 def set_speed(motor_id, new_velocity):
+    # Change operating mode (1 for Velocity Control Mode)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
+                                                              CHANGE_TO_VELOCITY)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    # Set velocity
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, motor_id, ADDR_GOAL_VELOCITY, new_velocity)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
