@@ -161,10 +161,10 @@ def start_moving(event):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
         if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
             raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
-        # Set new positions for each motor
-        moving(motor, current_degree)
         # Set velocity
         set_speed(motor, velocity)
+        # Set new positions for each motor
+        moving(motor, current_degree)
 
 
 # ......................................... Here starts the GUI.........................................
