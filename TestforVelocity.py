@@ -105,8 +105,8 @@ def start_moving(event):
     set_speed()
     disable_torque()
     set_operating_mode(CHANGE_TO_POSITION)
-    set_degree()
     enable_torque()
+    set_degree()
     disable_torque()
 
 
