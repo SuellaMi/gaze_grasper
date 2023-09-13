@@ -149,7 +149,6 @@ def set_speed():
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
 MovingBtn.bind('<ButtonPress-1>', start_moving)
