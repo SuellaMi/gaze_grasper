@@ -61,14 +61,6 @@ else:
 
 
 # ..........................................Helper Functions..........................................
-def get_velocity():
-    velocity = int(field2.get())
-    return velocity
-
-
-def get_degree():
-    degree = float(field1.get())
-    return degree
 
 
 def set_speed():
@@ -145,6 +137,17 @@ field2 = tk.Entry(root, textvariable=entry2)
 
 field1.grid(row=1, column=1)
 field2.grid(row=2, column=1)
+
+
+def get_velocity():
+    velocity = int(field2.get())
+    return velocity
+
+
+def get_degree():
+    degree = float(field1.get())
+    return degree
+
 
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
