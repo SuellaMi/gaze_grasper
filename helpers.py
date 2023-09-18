@@ -42,6 +42,16 @@ def inverse_kinematics(input_values):
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
     motor_values = [theta3, theta1, theta2]
+    # Throw error message if input for DXL_ID 1 is out of boundaries
+    if (motor_values[0] < 0.0) or (motor_values[0] > 270.0):
+        raise ValueError("Sorry, invalid output:" + str(motor_values[0]))
+    # Throw error message if input for DXL_ID 2 is out of boundaries
+    if (motor_values[1] < 0.0) or (motor_values[1] > 180.0):
+        raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
+    # Throw error message if input for DXL_ID 3 is out of boundaries
+    if (motor_values[2] < 0.0) or (motor_values[2] > 180.0):
+        raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
+    # Print the calculated degrees
     print("The new motor values are: " + str(motor_values))
     return motor_values
 

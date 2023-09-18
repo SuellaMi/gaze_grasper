@@ -162,9 +162,6 @@ def start_moving(event):
     for motor in DXL_ID:
         # Get the motor value for each motor
         motor_value = motor_values[motor-1]
-        # Throw error messages if input is out of boundaries
-        if (motor_value < 0.0) or (motor_value > 180.0):
-            raise ValueError("Sorry, invalid input for motor:" + str(motor))
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
 
