@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import tkinter as tk
+import helpers
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -98,22 +99,6 @@ else:
     getch()
     quit()
 
-
-# Helper function, to map the dynamixel data to degrees
-# Given in float, rounded down to two digits
-def change_to_degrees(data):
-    degrees = round(float((data * 360.0) / 4095.0), 2)
-    return degrees
-
-
-# Helper function, to set a new position for the robotic arm
-def set_goal_position(motor, data):
-    # Converts degrees back to the data that is readable by the dynamixel
-    position_val = int((data * 4095.0) / 360.0)
-    result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, position_val)
-    return result, error
-
-
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
@@ -126,7 +111,7 @@ for motor_id in DXL_ID:
         # Read in initial position of motors
         present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor_id, ADDR_PRESENT_POSITION)
         # Change the data into degrees
-        present_position = change_to_degrees(present_position)
+        present_position = helpers.change_to_degrees(present_position)
         print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.")
         print("The current position is:" + str(present_position))
 
@@ -134,18 +119,14 @@ for motor_id in DXL_ID:
 # Moving function
 def moving(motor_id, data):
     # Change operating mode (3 for Position Control Mode)
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
-                                                              CHANGE_TO_POSITION)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-    # Set position
-    dxl_comm_result, dxl_error = set_goal_position(motor_id, data)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    # dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
+    #  CHANGE_TO_POSITION)
+    # if dxl_comm_result != COMM_SUCCESS:
+    #    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    # elif dxl_error != 0:
+    #   print("%s" % packetHandler.getRxPacketError(dxl_error))
+    # Set a new position
+    helpers.set_position(packetHandler, portHandler, motor_id, data)
 
 
 def set_speed(motor_id, new_velocity):
@@ -166,22 +147,20 @@ def set_speed(motor_id, new_velocity):
 
 # The event that triggers the arm to move
 # Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
-# Checks if input is outside expected boundaries
+# Checks if input is outside expected boundaries (0-180 degrees)
 def start_moving(event):
+    # Get the velocity input from GUI
     velocity = get_velocity()
-    for motor in DXL_ID:
-        # Set velocity
-        set_speed(motor, velocity)
+    # For each motor !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # for motor in DXL_ID:
+    # Set velocity
+    # set_speed(motor, velocity)
     for motor in DXL_ID:
         # Get the input degrees and make it readable for dynamixel motors
         current_degree = get_degrees()[motor - 1]
         # Throw error messages if input is out of boundaries
-        if (motor == 1) and ((current_degree < 90.0) or (current_degree > 270.0)):
-            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
-        if (motor == 2) and ((current_degree < 0.0) or (current_degree > 185.0)):
-            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
-        if (motor == 3) and ((current_degree < 90.0) or (current_degree > 270.0)):
-            raise ValueError("Sorry, but this arm isn't out of rubber.\n Invalid input for motor:" + str(motor))
+        if (current_degree < 0.0) or (current_degree > 180.0):
+            raise ValueError("Sorry, invalid input for motor:" + str(motor))
         # Set new positions for each motor
         moving(motor, current_degree)
 
