@@ -1,9 +1,9 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import tkinter as tk
-from helpers import *
+import tkinter as tk  # Used for the GUI
 
+from helpers import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
 if os.name == 'nt':
@@ -117,32 +117,32 @@ for motor_id in DXL_ID:
 
 
 # Moving function
-def moving(motor_id, data):
-    # Change operating mode (3 for Position Control Mode)
-    # dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
-    #  CHANGE_TO_POSITION)
-    # if dxl_comm_result != COMM_SUCCESS:
-    #    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    # elif dxl_error != 0:
-    #   print("%s" % packetHandler.getRxPacketError(dxl_error))
-    # Set a new position
-    set_position(packetHandler, portHandler, motor_id, data)
+# def moving(motor_id, data):
+# Change operating mode (3 for Position Control Mode)
+# dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
+#  CHANGE_TO_POSITION)
+# if dxl_comm_result != COMM_SUCCESS:
+#    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+# elif dxl_error != 0:
+#   print("%s" % packetHandler.getRxPacketError(dxl_error))
+# Set a new position
+# set_position(packetHandler, portHandler, motor_id, data)
 
 
-def set_speed(motor_id, new_velocity):
-    # Change operating mode (1 for Velocity Control Mode)
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
-                                                              CHANGE_TO_VELOCITY)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-    # Set velocity
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, motor_id, ADDR_GOAL_VELOCITY, new_velocity)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
+# def set_speed(motor_id, new_velocity):
+# Change operating mode (1 for Velocity Control Mode)
+# dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
+#                                                        CHANGE_TO_VELOCITY)
+# if dxl_comm_result != COMM_SUCCESS:
+#   print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+# elif dxl_error != 0:
+#   print("%s" % packetHandler.getRxPacketError(dxl_error))
+# Set velocity
+# dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, motor_id, ADDR_GOAL_VELOCITY, new_velocity)
+# if dxl_comm_result != COMM_SUCCESS:
+#    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+# elif dxl_error != 0:
+#    print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
 # The event that triggers the arm to move
@@ -155,14 +155,17 @@ def start_moving(event):
     # for motor in DXL_ID:
     # Set velocity
     # set_speed(motor, velocity)
+    # Get the input values for all motors
+    motor_values = get_motor_values()
+    # Do the inverse kinematics for each value
+    motor_values = inverse_kinematics(motor_values)
     for motor in DXL_ID:
-        # Get the input degrees and make it readable for dynamixel motors
-        current_degree = get_degrees()[motor - 1]
+        motor_value = motor_values[motor-1]
         # Throw error messages if input is out of boundaries
-        if (current_degree < 0.0) or (current_degree > 180.0):
+        if (motor_value < 0.0) or (motor_value > 180.0):
             raise ValueError("Sorry, invalid input for motor:" + str(motor))
         # Set new positions for each motor
-        moving(motor, current_degree)
+        set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # ......................................... Here starts the GUI.........................................
@@ -206,10 +209,10 @@ field3.grid(row=3, column=1)
 field4.grid(row=4, column=1)
 
 
-# Function to get the degrees entries from the GUI
-def get_degrees():
-    degrees = [float(field1.get()), float(field2.get()), float(field3.get())]
-    return degrees
+# Function to get the input for the motors from the GUI
+def get_motor_values():
+    motor_values = [float(field1.get()), float(field2.get()), float(field3.get())]
+    return motor_values
 
 
 # Function to get the velocity entry from GUI
