@@ -155,11 +155,12 @@ def start_moving(event):
     # for motor in DXL_ID:
     # Set velocity
     # set_speed(motor, velocity)
-    # Get the input values for all motors
-    motor_values = get_motor_values()
-    # Do the inverse kinematics for each value
-    motor_values = inverse_kinematics(motor_values)
+    # Get the input values for x,y,z
+    input_values = get_input_values()
+    # Do the inverse kinematics for each input value to get the motor values
+    motor_values = inverse_kinematics(input_values)
     for motor in DXL_ID:
+        # Get the motor value for each motor
         motor_value = motor_values[motor-1]
         # Throw error messages if input is out of boundaries
         if (motor_value < 0.0) or (motor_value > 180.0):
@@ -174,9 +175,9 @@ root = tk.Tk()
 
 # Create text output
 l1 = tk.Label(root, text="Robotic Arm Controller")
-l2 = tk.Label(root, text="DXL1:")
-l3 = tk.Label(root, text="DXL2:")
-l4 = tk.Label(root, text="DXL3:")
+l2 = tk.Label(root, text="X:")
+l3 = tk.Label(root, text="Y:")
+l4 = tk.Label(root, text="Z:")
 l5 = tk.Label(root, text="Velocity:")
 
 # Display text in GUI
@@ -210,9 +211,9 @@ field4.grid(row=4, column=1)
 
 
 # Function to get the input for the motors from the GUI
-def get_motor_values():
-    motor_values = [float(field1.get()), float(field2.get()), float(field3.get())]
-    return motor_values
+def get_input_values():
+    input_values = [float(field1.get()), float(field2.get()), float(field3.get())]
+    return input_values
 
 
 # Function to get the velocity entry from GUI

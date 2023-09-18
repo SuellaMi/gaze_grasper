@@ -20,11 +20,11 @@ def change_to_degrees(data):
 
 
 # Function that does the inverse kinematics
-def inverse_kinematics(motor_values):
+def inverse_kinematics(input_values):
     # Desired position of end effector (3D)
-    x = motor_values[0]
-    y = motor_values[1]
-    z = motor_values[2]
+    x = input_values[0]
+    y = input_values[1]
+    z = input_values[2]
     # Equations for inverse kinematics with 3-DOF
     r1 = sqrt(x ** 2 + y ** 2)  # Equation 1
 
@@ -39,20 +39,16 @@ def inverse_kinematics(motor_values):
     # Calculate the angle for the new joint (theta3) for z-axis movement
     theta3 = rad2deg(arctan2(z, r1))
 
-    # Return the new array with calculated values in correct motor order
-    # Theta1 belongs to Motor2
-    motor_values[1] = theta1
-    # Theta2 belongs to Motor3
-    motor_values[2] = theta2
-    # Theta3 belongs to Motor1
-    motor_values[0] = theta3
+    # Return a new array with calculated motor values in degrees
+    # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
+    motor_values = [theta3, theta1, theta2]
     return motor_values
 
 
 # Helper function, to set a new position for the robotic arm
-def set_position(packetHandler, portHandler, motor, new_position):
+def set_position(packetHandler, portHandler, motor, degree_position):
     # Converts degrees back to the data that is readable by the dynamixel
-    # position_val = int((data * 4095.0) / 360.0)
+    new_position = int((degree_position * 4095.0) / 360.0)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, new_position)
     if result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(result))
