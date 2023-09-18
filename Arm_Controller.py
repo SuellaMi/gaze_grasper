@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import tkinter as tk
-import helpers
+from helpers import *
 
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -111,7 +111,7 @@ for motor_id in DXL_ID:
         # Read in initial position of motors
         present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor_id, ADDR_PRESENT_POSITION)
         # Change the data into degrees
-        present_position = helpers.change_to_degrees(present_position)
+        present_position = change_to_degrees(present_position)
         print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.")
         print("The current position is:" + str(present_position))
 
@@ -126,7 +126,7 @@ def moving(motor_id, data):
     # elif dxl_error != 0:
     #   print("%s" % packetHandler.getRxPacketError(dxl_error))
     # Set a new position
-    helpers.set_position(packetHandler, portHandler, motor_id, data)
+    set_position(packetHandler, portHandler, motor_id, data)
 
 
 def set_speed(motor_id, new_velocity):
