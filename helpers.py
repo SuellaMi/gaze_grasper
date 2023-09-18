@@ -33,8 +33,8 @@ def inverse_kinematics(input_values):
     phi2 = arctan2(-y + 8, x)  # Equation 3
     phi3 = arccos((r1 ** 2 - link1 ** 2 - link2 ** 2) / (-2 * link1 * link2))
 
-    theta1 = 180 + rad2deg(phi2 - phi1) + 12.2  # Equation 4 converted to degrees + buffer
-    theta2 = 270 - rad2deg(phi3) - 23.57
+    theta1 = 180 + rad2deg(phi2 - phi1)  # Equation 4 converted to degrees
+    theta2 = 270 - rad2deg(phi3)
 
     # Calculate the angle for the new joint (theta3) for z-axis movement
     theta3 = rad2deg(arctan2(z, r1))
@@ -42,6 +42,7 @@ def inverse_kinematics(input_values):
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
     motor_values = [theta3, theta1, theta2]
+    print("The new motor values are: " + str(motor_values))
     return motor_values
 
 
