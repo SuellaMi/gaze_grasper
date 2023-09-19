@@ -36,12 +36,14 @@ MY_DXL = 'X_SERIES'
 # DYNAMIXEL Protocol Version
 PROTOCOL_VERSION = 2.0
 
-# Control table address for X_SERIES
-ADDR_TORQUE_ENABLE = 64
-ADDR_GOAL_POSITION = 116
-ADDR_PRESENT_POSITION = 132
-ADDR_PRESENT_VELOCITY = 128
-ADDR_GOAL_VELOCITY = 104
+# Control table addresses for X_SERIES
+ADDR_TORQUE = 64  # Enable and disable the torque
+
+ADDR_PRESENT_POSITION = 132  # Address for reading the current position
+ADDR_GOAL_POSITION = 116  # Address for changing the position
+
+ADDR_PROFILE_VELOCITY = 112  # Address for changing the velocity in positional mode
+
 # Refer to the Minimum Position Limit of product eManual
 DXL_MINIMUM_POSITION_VALUE = 0
 # Refer to the Maximum Position Limit of product eManual
@@ -61,7 +63,6 @@ DEVICE_NAME = "/dev/ttyUSB0"
 
 TORQUE_ENABLE = 1  # Value for enabling the torque
 TORQUE_DISABLE = 0  # Value for disabling the torque
-DXL_MOVING_STATUS_THRESHOLD = 20  # Dynamixel moving status threshold
 
 ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 CHANGE_TO_VELOCITY = 1  # Velocity Control Mode
@@ -102,18 +103,21 @@ else:
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_TORQUE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
         # Read in initial position of motors
-        present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor_id, ADDR_PRESENT_POSITION)
+        present_position = get_position(packetHandler, portHandler, motor_id)
+        # Read in initial speed of motors
+        present_velocity = get_speed(packetHandler, portHandler, motor_id)
         # Change the data into degrees
         present_position = change_to_degrees(present_position)
         print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.")
         print("The current position is:" + str(present_position))
+        print("The current velocity is:" + str(present_velocity))
 
 
 # Moving function
@@ -151,10 +155,10 @@ for motor_id in DXL_ID:
 def start_moving(event):
     # Get the velocity input from GUI
     velocity = get_velocity()
-    # For each motor !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # for motor in DXL_ID:
-    # Set velocity
-    # set_speed(motor, velocity)
+    # Set the speed for each motor
+    for motor in DXL_ID:
+        # Set velocity
+        set_speed(packetHandler, portHandler, motor, velocity)
     # Get the input values for x,y,z
     input_values = get_input_values()
     # Do the inverse kinematics for each input value to get the motor values
@@ -233,7 +237,7 @@ root.mainloop()
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_TORQUE, TORQUE_DISABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:

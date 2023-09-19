@@ -1,9 +1,12 @@
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 from numpy import *  # Used for inverse kinematics
 
-# Control table address for X_SERIES
+# Control table addresses for X_SERIES
+ADDR_PRESENT_POSITION = 132  # Address for reading the current position
 ADDR_GOAL_POSITION = 116  # Address for changing the position
-ADDR_GOAL_VELOCITY = 104  # Address for changing the velocity
+
+ADDR_PROFILE_VELOCITY = 112  # Address for changing the velocity in positional mode
+
 ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 
 # The link lengths of our robotic arm in cm
@@ -13,10 +16,10 @@ link3 = 1
 
 
 # Helper function, to map the dynamixel data to degrees
-# Returns degrees as floats, rounded down to two digits
+# Returns degrees as floats, rounded down to two decimals
 def change_to_degrees(data):
-    degrees = round(float((data * 360.0) / 4095.0), 2)
-    return degrees
+    degree = round(float((data * 360.0) / 4095.0), 2)
+    return degree
 
 
 # Function that does the inverse kinematics
@@ -56,11 +59,40 @@ def inverse_kinematics(input_values):
     return motor_values
 
 
-# Helper function, to set a new position for the robotic arm
+# Get the current position
+def get_position(packetHandler, portHandler, motor):
+    present_position, result, error = packetHandler.read4ByteTxRx(portHandler, motor, ADDR_PRESENT_POSITION)
+    if result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(result))
+    elif error != 0:
+        print("%s" % packetHandler.getRxPacketError(error))
+    return present_position
+
+
+# Set a new position for the robotic arm
 def set_position(packetHandler, portHandler, motor, degree_position):
     # Converts degrees back to the data that is readable by the dynamixel
     new_position = int((degree_position * 4095.0) / 360.0)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_GOAL_POSITION, new_position)
+    if result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(result))
+    elif error != 0:
+        print("%s" % packetHandler.getRxPacketError(error))
+
+
+# Get the current velocity
+def get_speed(packetHandler, portHandler, motor):
+    present_velocity, result, error = packetHandler.read4ByteTxRx(portHandler, motor, ADDR_PROFILE_VELOCITY)
+    if result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(result))
+    elif error != 0:
+        print("%s" % packetHandler.getRxPacketError(error))
+    return present_velocity
+
+
+# Set the speed
+def set_speed(packetHandler, portHandler, motor, speed):
+    result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_PROFILE_VELOCITY, speed)
     if result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(result))
     elif error != 0:
