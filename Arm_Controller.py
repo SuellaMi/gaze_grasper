@@ -29,7 +29,7 @@ else:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
-# ********* DYNAMIXEL Model definition *********
+# **************************************** DYNAMIXEL Model definition ***********************************************
 
 # DYNAMIXEL Model definition for XL430-W250-T
 MY_DXL = 'X_SERIES'
@@ -120,35 +120,6 @@ for motor_id in DXL_ID:
         print("The current velocity is:" + str(present_velocity))
 
 
-# Moving function
-# def moving(motor_id, data):
-# Change operating mode (3 for Position Control Mode)
-# dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
-#  CHANGE_TO_POSITION)
-# if dxl_comm_result != COMM_SUCCESS:
-#    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-# elif dxl_error != 0:
-#   print("%s" % packetHandler.getRxPacketError(dxl_error))
-# Set a new position
-# set_position(packetHandler, portHandler, motor_id, data)
-
-
-# def set_speed(motor_id, new_velocity):
-# Change operating mode (1 for Velocity Control Mode)
-# dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, motor_id, ADDR_OPERATING_MODE,
-#                                                        CHANGE_TO_VELOCITY)
-# if dxl_comm_result != COMM_SUCCESS:
-#   print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-# elif dxl_error != 0:
-#   print("%s" % packetHandler.getRxPacketError(dxl_error))
-# Set velocity
-# dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, motor_id, ADDR_GOAL_VELOCITY, new_velocity)
-# if dxl_comm_result != COMM_SUCCESS:
-#    print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-# elif dxl_error != 0:
-#    print("%s" % packetHandler.getRxPacketError(dxl_error))
-
-
 # The event that triggers the arm to move
 # Takes the input (degrees) from the users input and the corresponding id of the motor we want to move
 # Checks if input is outside expected boundaries (0-180 degrees)
@@ -165,12 +136,12 @@ def start_moving(event):
     motor_values = inverse_kinematics(input_values)
     for motor in DXL_ID:
         # Get the motor value for each motor
-        motor_value = motor_values[motor-1]
+        motor_value = motor_values[motor - 1]
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
 
 
-# ......................................... Here starts the GUI.........................................
+# ******************************************** Here starts the GUI**************************************************
 # Initialize window
 root = tk.Tk()
 

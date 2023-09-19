@@ -98,12 +98,3 @@ def set_speed(packetHandler, portHandler, motor, speed):
         print("%s" % packetHandler.getTxRxResult(result))
     elif error != 0:
         print("%s" % packetHandler.getRxPacketError(error))
-
-
-# Changes the operating mode
-def set_operating_mode(packetHandler, portHandler, DXL_ID, mode):
-    result, error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_OPERATING_MODE, mode)
-    if result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(result))
-    elif error != 0:
-        print("%s" % packetHandler.getRxPacketError(error))
