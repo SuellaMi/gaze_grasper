@@ -92,7 +92,7 @@ def get_speed(packetHandler, portHandler, motor):
 
 # Set the speed
 def set_speed(packetHandler, portHandler, motor, speed):
-    speed = speed * 0.229
+    speed = int(speed * 0.229)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_PROFILE_VELOCITY, speed)
     if result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(result))
