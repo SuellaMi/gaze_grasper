@@ -1,13 +1,13 @@
 from __future__ import print_function
+import pixy2.build.python_demos.pixy as pixy
 from ctypes import *
-from pixycamev3 import *
-from pixycamev3.pixy2 import Pixy2
 
 # Pixy2 Python SWIG get blocks example #
 
-print("Get Blocks")
+print("Pixy2 Python SWIG Example -- Get Blocks")
 
-pixy = Pixy2(port=1, i2c_address=0x54)
+pixy.init()
+pixy.change_prog("color_connected_components")
 
 
 class Blocks(Structure):
@@ -25,7 +25,7 @@ blocks = Blocks[100]
 frame = 0
 
 while 1:
-    count = pixy.get_blocks(1, 100)
+    count = pixy.ccc_get_blocks(100, blocks)
 
     if count > 0:
         print('frame %3d:' % frame)
