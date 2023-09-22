@@ -24,6 +24,20 @@ class Blocks(Structure):
 blocks = pixy2.BlockArray(100)
 frame = 0
 
+
+# Searches for an object in our frame we can lock on
+def check_view(color_code):
+    # Count all detected objects
+    count_blocks = pixy2.ccc_get_blocks(100, blocks)
+    for obj in range(0, count_blocks):
+        # Checks if block has correct color
+        if blocks[obj].msignature == color_code:
+            # Returns largest block with correct color code
+            print(str(blocks[obj]))
+            return blocks[obj]
+
+
+# Prints all the blocks recognized by the PixyCam
 while 1:
     count = pixy2.ccc_get_blocks(100, blocks)
 

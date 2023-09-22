@@ -10,8 +10,8 @@ ADDR_PROFILE_VELOCITY = 112  # Address for changing the velocity in positional m
 ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 
 # The link lengths of our robotic arm in cm
-link1 = 17.5
-link2 = 14
+link1 = 18
+link2 = 13
 link3 = 1
 
 
@@ -33,14 +33,14 @@ def inverse_kinematics(input_values):
 
     # Calculate angles for the first two joints (theta1 and theta2) as before
     phi1 = arccos((link2 ** 2 - link1 ** 2 - r1 ** 2) / (-2 * link1 * r1))  # Equation 2
-    phi2 = arctan2(-y + 8, x)  # Equation 3
+    phi2 = arctan2(-y, x)  # Equation 3
     phi3 = arccos((r1 ** 2 - link1 ** 2 - link2 ** 2) / (-2 * link1 * link2))
 
     theta1 = 180 + rad2deg(phi2 - phi1)  # Equation 4 converted to degrees
     theta2 = 270 - rad2deg(phi3)
 
     # Calculate the angle for the new joint (theta3) for z-axis movement
-    theta3 = 180 + rad2deg(arctan2(z, r1))
+    theta3 = rad2deg(arctan2(z, r1))
 
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
@@ -56,7 +56,28 @@ def inverse_kinematics(input_values):
         raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
     # Print the calculated degrees
     print("The new motor values are: " + str(motor_values))
+    # Returns an array that includes the calculated theta values for each motor
     return motor_values
+
+
+# Function that does the forward kinematics
+def forward_kinematics(x, y):
+    # Given joint angles (in degrees for this example)
+    theta1 = deg2rad(180 - 90)  # Convert to radians
+    theta2 = deg2rad(90 - 90)  # Convert to radians
+    theta3 = deg2rad(0)  # Convert to radians, example value for the 3rd DOF
+
+    # Forward kinematics equations
+    x = link1 * cos(theta1) + (link2 * cos(theta1 + theta2))
+    y = link1 * sin(theta1) + (link2 * sin(theta1 + theta2))
+
+    # Compute r, the projection of the end effector on XY plane
+    r = sqrt(x ** 2 + y ** 2)
+
+    # Compute the z-coordinate of the end effector using theta3
+    z = r * tan(theta3)
+    # !!!!!!!!!!!!!!! Maybe adjust the output
+    return x, -y, z
 
 
 # Get the current position
