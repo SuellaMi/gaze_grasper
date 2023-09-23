@@ -61,12 +61,15 @@ def inverse_kinematics(input_values):
 
 
 # Function that does the forward kinematics
-def forward_kinematics():
-    # !!!!!!!!!! get current angles
+def forward_kinematics(packetHandler, portHandler):
+    # Get current position for each motor
+    position1 = change_to_degrees(get_position(packetHandler, portHandler, 1))
+    position2 = change_to_degrees(get_position(packetHandler, portHandler, 2))
+    position3 = change_to_degrees(get_position(packetHandler, portHandler, 3))
     # Given joint angles (in degrees for this example)
-    theta1 = deg2rad(180 - 90)  # Convert to radians
-    theta2 = deg2rad(90 - 90)  # Convert to radians
-    theta3 = deg2rad(0)  # Convert to radians, example value for the 3rd DOF
+    theta1 = deg2rad(position1 - 180)  # Convert to radians
+    theta2 = deg2rad(180 - position2)  # Convert to radians
+    theta3 = deg2rad(position3)  # Convert to radians, example value for the 3rd DOF
 
     # Forward kinematics equations
     x = link1 * cos(theta1) + (link2 * cos(theta1 + theta2))
@@ -77,7 +80,7 @@ def forward_kinematics():
 
     # Compute the z-coordinate of the end effector using theta3
     z = r * tan(theta3)
-    # !!!!!!!!!!!!!!! Maybe adjust the output
+    # Return target points
     return x, -y, z
 
 

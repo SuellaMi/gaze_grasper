@@ -3,7 +3,7 @@
 import os
 import tkinter as tk  # Used for the GUI
 
-from helpers import *
+from kinematics import *
 from Pixy_Controller import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -181,6 +181,9 @@ field1.grid(row=1, column=1)
 field2.grid(row=2, column=1)
 field3.grid(row=3, column=1)
 field4.grid(row=4, column=1)
+
+# Print PixyCam blocks
+print_blocks()
 
 
 # Function to get the input for the motors from the GUI
