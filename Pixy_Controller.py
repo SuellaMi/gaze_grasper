@@ -22,29 +22,46 @@ class Blocks(Structure):
 
 
 blocks = pixy2.BlockArray(100)
-frame = 0
 
 
 # Searches for an object in our frame we can lock on
-def check_view(color_code):
+def set_target(color_code):
     # Count all detected objects
     count_blocks = pixy2.ccc_get_blocks(100, blocks)
     for obj in range(0, count_blocks):
         # Checks if block has correct color
         if blocks[obj].msignature == color_code:
-            # Returns largest block with correct color code
+            # Returns largest block in frame (nearest block to PixyCam) with correct color code
             print(str(blocks[obj]))
             return blocks[obj]
 
 
 # Prints all the blocks recognized by the PixyCam
-while 1:
-    count = pixy2.ccc_get_blocks(100, blocks)
+def print_blocks():
+    frame = 0
+    while 1:
+        count = pixy2.ccc_get_blocks(100, blocks)
 
-    if count > 0:
-        print('frame %3d:' % frame)
-        frame = frame + 1
-        for index in range(0, count):
-            print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (
-                blocks[index].m_signature, blocks[index].m_x, blocks[index].m_y, blocks[index].m_width,
-                blocks[index].m_height))
+        if count > 0:
+            print('frame %3d:' % frame)
+            frame = frame + 1
+            for index in range(0, count):
+                print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (
+                    blocks[index].m_signature, blocks[index].m_x, blocks[index].m_y, blocks[index].m_width,
+                    blocks[index].m_height))
+
+
+# Pixy Cam follows given target
+def center_target(block):
+    # Get the frame width (x) in pixel
+    frame_x = pixy2.get_frame_width()
+    # Get the frame height (y) in pixel
+    frame_y = pixy2.get_frame_height()
+    # Calculate the middle of the frame
+    frame_center = (frame_x/2, frame_y/2)
+    # Get the center of the target object
+    obj_center = (block.m_x, block.m_y)
+
+    # if (frame_center[0] != obj_center[0]) or (frame_center[1] != obj_center[1]):
+
+

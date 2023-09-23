@@ -4,6 +4,7 @@ import os
 import tkinter as tk  # Used for the GUI
 
 from helpers import *
+from Pixy_Controller import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
 if os.name == 'nt':

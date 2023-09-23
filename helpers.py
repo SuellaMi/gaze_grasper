@@ -61,7 +61,8 @@ def inverse_kinematics(input_values):
 
 
 # Function that does the forward kinematics
-def forward_kinematics(x, y):
+def forward_kinematics():
+    # !!!!!!!!!! get current angles
     # Given joint angles (in degrees for this example)
     theta1 = deg2rad(180 - 90)  # Convert to radians
     theta2 = deg2rad(90 - 90)  # Convert to radians
