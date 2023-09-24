@@ -4,7 +4,6 @@ import os
 import tkinter as tk  # Used for the GUI
 
 from kinematics import *
-from Pixy_Controller import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
 if os.name == 'nt':
@@ -140,10 +139,9 @@ def start_moving(event):
         motor_value = motor_values[motor - 1]
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
+    # Function that opens and closes the gripper
+    open_close_gripper(packetHandler, portHandler, get_gripper())
 
-
-# Print PixyCam blocks
-print_blocks()
 
 # ******************************************** Here starts the GUI**************************************************
 # Initialize window
@@ -155,6 +153,7 @@ l2 = tk.Label(root, text="X:")
 l3 = tk.Label(root, text="Y:")
 l4 = tk.Label(root, text="Z:")
 l5 = tk.Label(root, text="Velocity:")
+l6 = tk.Label(root, text="Gripper:")
 
 # Display text in GUI
 l1.grid(row=0, column=0)
@@ -162,6 +161,7 @@ l2.grid(row=1, column=0)
 l3.grid(row=2, column=0)
 l4.grid(row=3, column=0)
 l5.grid(row=4, column=0)
+l6.grid(row=5, column=0)
 
 # Create first entry field for DXL1
 entry1 = tk.StringVar()
@@ -179,11 +179,16 @@ field3 = tk.Entry(root, textvariable=entry3)
 entry4 = tk.StringVar()
 field4 = tk.Entry(root, textvariable=entry4)
 
+# Create fifth entry for gripper
+entry5 = tk.StringVar()
+field5 = tk.Entry(root, textvariable=entry5)
+
 # Display entry fields
 field1.grid(row=1, column=1)
 field2.grid(row=2, column=1)
 field3.grid(row=3, column=1)
 field4.grid(row=4, column=1)
+field5.grid(row=5, column=1)
 
 
 # Function to get the input for the motors from the GUI
@@ -198,13 +203,19 @@ def get_velocity():
     return velocity
 
 
+# Function to get the gripper open or close
+def get_gripper():
+    gripper = int(field5.get())
+    return gripper
+
+
 # Create OK button to start movement
 MovingBtn = tk.Button(root, text="OK")
 MovingBtn.grid(row=1, column=2)
 # Call moving function
 MovingBtn.bind('<ButtonPress-1>', start_moving)
 
-tk.Button(root, text="Quit", command=root.destroy).grid(row=5, column=1)
+tk.Button(root, text="Quit", command=root.destroy).grid(row=6, column=1)
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
