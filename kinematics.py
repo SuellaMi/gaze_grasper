@@ -129,3 +129,16 @@ def set_speed(packetHandler, portHandler, motor, speed):
         print("%s" % packetHandler.getTxRxResult(result))
     elif error != 0:
         print("%s" % packetHandler.getRxPacketError(error))
+
+
+# Function that opens and closes the gripper
+# gripper_code is 100 for open and 220 for close
+# 4 for the motor id
+# !!!!!!!!!!!!!!!!!!!! Edit this !!!!!!!!!!!!!
+def open_close_gripper(packetHandler, portHandler, gripper_code):
+    gripper_movement = int((gripper_code * 4095.0) / 360.0)
+    result, error = packetHandler.write4ByteTxRx(portHandler, 4, ADDR_GOAL_POSITION, gripper_movement)
+    if result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(result))
+    elif error != 0:
+        print("%s" % packetHandler.getRxPacketError(error))
