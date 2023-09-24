@@ -126,6 +126,8 @@ for motor_id in DXL_ID:
 def start_moving(event):
     # Get the velocity input from GUI
     velocity = get_velocity()
+    # !!!!!!!!!!!!!!!
+    gripper_code = get_gripper()
     # Set the speed for each motor
     for motor in DXL_ID:
         # Set velocity
@@ -140,7 +142,7 @@ def start_moving(event):
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
     # Function that opens and closes the gripper
-    open_close_gripper(packetHandler, portHandler, get_gripper())
+    open_close_gripper(packetHandler, portHandler, gripper_code)
 
 
 # ******************************************** Here starts the GUI**************************************************
