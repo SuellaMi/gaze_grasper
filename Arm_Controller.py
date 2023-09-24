@@ -182,9 +182,6 @@ field2.grid(row=2, column=1)
 field3.grid(row=3, column=1)
 field4.grid(row=4, column=1)
 
-# Print PixyCam blocks
-print_blocks()
-
 
 # Function to get the input for the motors from the GUI
 def get_input_values():
@@ -205,6 +202,9 @@ MovingBtn.grid(row=1, column=2)
 MovingBtn.bind('<ButtonPress-1>', start_moving)
 
 tk.Button(root, text="Quit", command=root.destroy).grid(row=5, column=1)
+
+# Print PixyCam blocks
+print_blocks()
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
