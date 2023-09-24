@@ -203,11 +203,11 @@ MovingBtn.bind('<ButtonPress-1>', start_moving)
 
 tk.Button(root, text="Quit", command=root.destroy).grid(row=5, column=1)
 
-# Print PixyCam blocks
-print_blocks()
-
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
+
+# Print PixyCam blocks
+print_blocks()
 
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
