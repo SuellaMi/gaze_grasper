@@ -37,14 +37,17 @@ def inverse_kinematics(input_values):
     phi3 = arccos((r1 ** 2 - link1 ** 2 - link2 ** 2) / (-2 * link1 * link2))
 
     theta1 = 180 + rad2deg(phi2 - phi1)  # Equation 4 converted to degrees
-    theta2 = 270 - rad2deg(phi3)
+    theta2 = 90 + rad2deg(phi3)
 
     # Calculate the angle for the new joint (theta3) for z-axis movement
     theta3 = rad2deg(arctan2(z, r1))
 
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
-    motor_values = [theta3, theta1, theta2]
+    if x < 0:
+        motor_values = [theta3, - theta1, 540 - theta2]
+    else:
+        motor_values = [theta3, theta1, theta2]
     # Throw error message if input for DXL_ID 1 is out of boundaries
     if (motor_values[0] < 0.0) or (motor_values[0] > 270.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[0]))
