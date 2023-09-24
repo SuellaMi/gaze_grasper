@@ -11,8 +11,7 @@ ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 
 # The link lengths of our robotic arm in cm
 link1 = 18
-link2 = 13
-link3 = 1
+link2 = 27
 
 
 # Helper function, to map the dynamixel data to degrees
@@ -40,7 +39,7 @@ def inverse_kinematics(input_values):
     theta2 = 90 + rad2deg(phi3)
 
     # Calculate the angle for the new joint (theta3) for z-axis movement
-    theta3 = rad2deg(arctan2(z, r1))
+    theta3 = 180 + rad2deg(arctan2(z, r1))
 
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
