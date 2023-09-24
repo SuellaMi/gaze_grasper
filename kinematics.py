@@ -44,10 +44,13 @@ def inverse_kinematics(input_values):
 
     # Return a new array with calculated motor values in degrees
     # Map: theta3 -> motor1, theta1 -> motor2, theta2 -> motor3
+
+    # If x is smaller than 0 we have to adjust the theta1 and theta2 values
     if x < 0:
-        motor_values = [theta3, - theta1, 540 - theta2]
-    else:
-        motor_values = [theta3, theta1, theta2]
+        theta1 = - theta1
+        theta2 = 540 - theta2
+    # If x is positive no need to adjust the values
+    motor_values = [theta3, theta1, theta2]
     # Throw error message if input for DXL_ID 1 is out of boundaries
     if (motor_values[0] < 0.0) or (motor_values[0] > 270.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[0]))
@@ -55,7 +58,7 @@ def inverse_kinematics(input_values):
     if (motor_values[1] < 0.0) or (motor_values[1] > 180.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
     # Throw error message if input for DXL_ID 3 is out of boundaries
-    if (motor_values[2] < 0.0) or (motor_values[2] > 180.0):
+    if (motor_values[2] < 0.0) or (motor_values[2] > 360.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
     # Print the calculated degrees
     print("The new motor values are: " + str(motor_values))
