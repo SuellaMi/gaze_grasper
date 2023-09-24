@@ -61,7 +61,7 @@ def inverse_kinematics(input_values):
     if (motor_values[2] < 0.0) or (motor_values[2] > 360.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
     # Print the calculated degrees
-    print("The new motor values are: " + str(motor_values))
+    print("The new motor values in degrees are: " + str(motor_values))
     # Returns an array that includes the calculated theta values for each motor
     return motor_values
 
@@ -79,15 +79,19 @@ def forward_kinematics(packetHandler, portHandler):
 
     # Forward kinematics equations
     x = link1 * cos(theta1) + (link2 * cos(theta1 + theta2))
-    y = link1 * sin(theta1) + (link2 * sin(theta1 + theta2))
+    y = -(link1 * sin(theta1) + (link2 * sin(theta1 + theta2)))
 
     # Compute r, the projection of the end effector on XY plane
     r = sqrt(x ** 2 + y ** 2)
 
     # Compute the z-coordinate of the end effector using theta3
     z = r * tan(theta3)
+    # Add point values to one array
+    point_values = [x, y, z]
+    # Print the values
+    print("The points we are getting from the forward kinematics are: " + str(point_values))
     # Return target points
-    return x, -y, z
+    return point_values
 
 
 # Get the current position
@@ -125,20 +129,6 @@ def get_speed(packetHandler, portHandler, motor):
 def set_speed(packetHandler, portHandler, motor, speed):
     speed = int(speed * 0.229)
     result, error = packetHandler.write4ByteTxRx(portHandler, motor, ADDR_PROFILE_VELOCITY, speed)
-    if result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(result))
-    elif error != 0:
-        print("%s" % packetHandler.getRxPacketError(error))
-
-
-# Function that opens and closes the gripper
-# gripper_code is 100 for open and 220 for close
-# 4 for the motor id
-# !!!!!!!!!!!!!!!!!!!! Edit this !!!!!!!!!!!!!
-def open_close_gripper(packetHandler, portHandler, gripper_code):
-    gripper_movement = int((gripper_code * 4095.0) / 360.0)
-    result, error = packetHandler.write4ByteTxRx(portHandler, dxl_id=4, address=ADDR_GOAL_POSITION,
-                                                 data=gripper_movement)
     if result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(result))
     elif error != 0:

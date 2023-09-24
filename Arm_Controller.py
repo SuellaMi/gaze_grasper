@@ -55,7 +55,7 @@ BAUD_RATE = 57600
 # ID: 1 is the base servo that controls the rotation of the robotic arm
 # ID: 2, 3 are the servos that determine the height and horizontal distance of the gripper end
 # ID: 4 controls the gripper
-DXL_ID = [1, 2, 3]
+DXL_ID = [1, 2, 3, 4]
 
 # Use the actual port assigned to the U2D2
 # Linux: "/dev/ttyUSB*"
@@ -126,8 +126,6 @@ for motor_id in DXL_ID:
 def start_moving(event):
     # Get the velocity input from GUI
     velocity = get_velocity()
-    # !!!!!!!!!!!!!!!
-    gripper_code = get_gripper()
     # Set the speed for each motor
     for motor in DXL_ID:
         # Set velocity
@@ -136,13 +134,15 @@ def start_moving(event):
     input_values = get_input_values()
     # Do the inverse kinematics for each input value to get the motor values
     motor_values = inverse_kinematics(input_values)
+    # Test the forward kinematics
+    forward_kinematics(portHandler, packetHandler)
+    # Check for forward kinematics
+
     for motor in DXL_ID:
         # Get the motor value for each motor
         motor_value = motor_values[motor - 1]
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
-    # Function that opens and closes the gripper
-    open_close_gripper(packetHandler, portHandler, gripper_code)
 
 
 # ******************************************** Here starts the GUI**************************************************
@@ -154,8 +154,9 @@ l1 = tk.Label(root, text="Robotic Arm Controller")
 l2 = tk.Label(root, text="X:")
 l3 = tk.Label(root, text="Y:")
 l4 = tk.Label(root, text="Z:")
-l5 = tk.Label(root, text="Velocity:")
-l6 = tk.Label(root, text="Gripper:")
+l5 = tk.Label(root, text="Gripper:")
+l6 = tk.Label(root, text="Velocity:")
+
 
 # Display text in GUI
 l1.grid(row=0, column=0)
@@ -177,11 +178,11 @@ field2 = tk.Entry(root, textvariable=entry2)
 entry3 = tk.StringVar()
 field3 = tk.Entry(root, textvariable=entry3)
 
-# Create fourth entry field for velocity
+# Create fourth entry field for gripper
 entry4 = tk.StringVar()
 field4 = tk.Entry(root, textvariable=entry4)
 
-# Create fifth entry for gripper
+# Create fifth entry for velocity
 entry5 = tk.StringVar()
 field5 = tk.Entry(root, textvariable=entry5)
 
@@ -195,7 +196,7 @@ field5.grid(row=5, column=1)
 
 # Function to get the input for the motors from the GUI
 def get_input_values():
-    input_values = [float(field1.get()), float(field2.get()), float(field3.get())]
+    input_values = [float(field1.get()), float(field2.get()), float(field3.get()), float(field4.get())]
     return input_values
 
 
@@ -203,12 +204,6 @@ def get_input_values():
 def get_velocity():
     velocity = int(field4.get())
     return velocity
-
-
-# Function to get the gripper open or close
-def get_gripper():
-    gripper = int(field5.get())
-    return gripper
 
 
 # Create OK button to start movement
