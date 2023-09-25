@@ -56,6 +56,9 @@ BAUD_RATE = 57600
 # ID: 2, 3 are the servos that determine the height and horizontal distance of the gripper end
 # ID: 4 controls the gripper
 DXL_ID = [1, 2, 3, 4]
+# Gripper codes
+OPEN: 100
+CLOSE: 220
 
 # Use the actual port assigned to the U2D2
 # Linux: "/dev/ttyUSB*"
@@ -118,6 +121,14 @@ for motor_id in DXL_ID:
         print("Dynamixel motor:" + str(motor_id) + " has been successfully connected.")
         print("The current position is:" + str(present_position))
         print("The current velocity is:" + str(present_velocity))
+
+
+# Set initial positions for motor: 2,3,4
+# set_position(packetHandler, portHandler, DXL_ID[1], )
+# set_position(packetHandler, portHandler, DXL_ID[2], )
+# set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
+# Searching for object with specific color code
+# while
 
 
 # The event that triggers the arm to move
