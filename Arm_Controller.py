@@ -125,6 +125,8 @@ for motor_id in DXL_ID:
 
     # Set the initial velocity
     for x in DXL_ID:
+        if x == 1:
+            set_speed(packetHandler, portHandler, x, 90)
         set_speed(packetHandler, portHandler, x, 200)
 
 # Set initial positions for motor: 2,3,4
@@ -134,19 +136,26 @@ set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
 # Searching for an object in our environment
 while True:
+    # Get the offset of the block we locked on
+    x_offset = offset_width()
     # If object can be directly tracked
-    if check_view() > 0:
+    if (check_view() > 0) and (x_offset == 0.0):
         break
     else:
         # Move to look for the object between 90 and 270 degrees
         for x in range(90, 270):
             set_position(packetHandler, portHandler, DXL_ID[0], x)
-            if check_view() > 0:
+            # Get the offset of the block we locked on
+            x_offset = offset_width()
+            print("The offset of x is: " + str(x_offset))
+            # Move motor until we are centered
+            if (check_view() > 0) and (x_offset == 0.0):
                 break
+    break
 # Get the offset of the block we locked on
-x_offset = offset_width()
+# x_offset = offset_width()
 # Move motor until we are centered
-print("The offset of x is: " + str(x_offset))
+# print("The offset of x is: " + str(x_offset))
 
 
 # The event that triggers the arm to move
