@@ -82,17 +82,16 @@ def offset_width():
 
         frame = frame + 1
 
-        if count > 0:
-            # Block acquisition logic #
-            if locked_on_block:
-                # Find the block that we are locked to
-                for Index in range(0, count):
-                    if Blocks[Index].m_index == locked_block_index:
-                        print('Frame %3d: Locked' % frame)
-                        display_block(Index, Blocks[Index])
+        # Block acquisition logic #
+        if locked_on_block:
+            # Find the block that we are locked to
+            for index in range(0, count):
+                if blocks[index].m_index == locked_block_index:
+                    print('Frame %3d: Locked' % frame)
+                    display_block(index, blocks[index])
 
-                        x_offset = (pixy2.get_frame_width() / 2) - Blocks[Index].m_x
-                        return x_offset
+                    x_offset = (pixy2.get_frame_width() / 2) - blocks[index].m_x
+                    return x_offset
             else:
                 print('Frame %3d:' % frame)
 
@@ -101,8 +100,6 @@ def offset_width():
                     display_block(index, blocks[index])
 
                 # Find an acceptable block to lock on to #
-                if Blocks[0].m_age > MINIMUM_BLOCK_AGE_TO_LOCK:
-                    locked_block_index = Blocks[0].m_index
+                if blocks[0].m_age > MINIMUM_BLOCK_AGE_TO_LOCK:
+                    locked_block_index = blocks[0].m_index
                     locked_on_block = True
-        else:
-            break
