@@ -144,6 +144,8 @@ def start_moving(event):
             motor_value = motor_values[motor - 1]
             # Set new positions for each motor
             set_position(packetHandler, portHandler, motor, motor_value)
+    # Test the forward kinematics
+    forward_kinematics(portHandler, packetHandler)
 
 
 # ******************************************** Here starts the GUI**************************************************
@@ -222,9 +224,6 @@ tk.Button(root, text="Quit", command=root.destroy).grid(row=6, column=1)
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
-
-# Test the forward kinematics
-forward_kinematics(portHandler, packetHandler)
 
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
