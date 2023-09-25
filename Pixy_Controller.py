@@ -42,7 +42,7 @@ def set_target(color_code):
 
 # Checks if there are any objects detected
 def check_view():
-    count = pixy2.ccc_get_blocks()
+    count = pixy2.ccc_get_blocks(100, blocks)
     return count
 
 

@@ -125,7 +125,7 @@ for motor_id in DXL_ID:
 
 # Set the initial velocity
     for x in DXL_ID:
-        set_speed(packetHandler, portHandler, x, 150)
+        set_speed(packetHandler, portHandler, x, 200)
 
 # Set initial positions for motor: 2,3,4
 initial_position = inverse_kinematics([27.7, 6.6, 0])
