@@ -138,11 +138,15 @@ while True:
     if check_view() > 0:
         break
     else:
-        # Move to look for the object
+        # Move to look for the object between 90 and 270 degrees
         for x in range(90, 270):
             set_position(packetHandler, portHandler, DXL_ID[0], x)
             if check_view() > 0:
                 break
+# Get the offset of the block we locked on
+x_offset = offset_width()
+# Move motor until we are centered
+print(x_offset)
 
 
 # The event that triggers the arm to move
