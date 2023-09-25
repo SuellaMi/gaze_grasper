@@ -40,10 +40,13 @@ def set_target(color_code):
             return blocks[obj]
 
 
-# Checks if there are any objects detected
+# Checks if there are any objects detected and centered
 def check_view():
     count = pixy2.ccc_get_blocks(100, blocks)
-    return count
+    if count > 0:
+        return center_target_width(blocks[0])
+    else:
+        return False
 
 
 # Prints all the blocks recognized by the PixyCam
@@ -61,15 +64,11 @@ def print_blocks():
                     blocks[index].m_height))
 
 
-# Pixy Cam follows given target
-def center_target(block):
+# Pixy Cam checks if an object is centered in the frame width (x)
+def center_target_width(block):
     # Get the frame width (x) in pixel
-    frame_x = pixy2.get_frame_width()
-    # Get the frame height (y) in pixel
-    frame_y = pixy2.get_frame_height()
-    # Calculate the middle of the frame
-    frame_center = (frame_x / 2, frame_y / 2)
-    # Get the center of the target object
-    obj_center = (block.m_x, block.m_y)
-
-    # if (frame_center[0] != obj_center[0]) or (frame_center[1] != obj_center[1]):
+    frame_x = pixy2.get_frame_width() / 2
+    # Get the x coordinate of the target object
+    block_x = block.m_x
+    # Check if block is centered
+    return frame_x == block_x

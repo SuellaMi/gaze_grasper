@@ -134,12 +134,14 @@ set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
 # Searching for an object in our environment
 while True:
-    if check_view() > 0:
+    # If object can be directly tracked
+    if check_view():
         break
     else:
+        # Move to look for the object
         for x in range(90, 270):
             set_position(packetHandler, portHandler, DXL_ID[0], x)
-            if check_view() > 0:
+            if check_view():
                 break
 
 
