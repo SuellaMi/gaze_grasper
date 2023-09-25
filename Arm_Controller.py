@@ -126,14 +126,14 @@ for motor_id in DXL_ID:
 def start_moving(event):
     # Get the velocity input from GUI
     velocity = get_velocity()
-    # Set the speed for each motor
-    for motor in DXL_ID:
-        # Set velocity
-        set_speed(packetHandler, portHandler, motor, velocity)
     # Get the input values for x,y,z
     input_values = get_input_values()
     # Get the command to open or close the gripper
     gripper_code = get_gripper()
+    # Set the speed for each motor
+    for motor in DXL_ID:
+        # Set velocity
+        set_speed(packetHandler, portHandler, motor, velocity)
     # Do the inverse kinematics for each input value to get the motor values
     motor_values = inverse_kinematics(input_values)
     for motor in DXL_ID:
@@ -144,8 +144,6 @@ def start_moving(event):
             motor_value = motor_values[motor - 1]
             # Set new positions for each motor
             set_position(packetHandler, portHandler, motor, motor_value)
-    # Test the forward kinematics
-    forward_kinematics(portHandler, packetHandler)
 
 
 # ******************************************** Here starts the GUI**************************************************
@@ -224,6 +222,9 @@ tk.Button(root, text="Quit", command=root.destroy).grid(row=6, column=1)
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
 root.mainloop()
+
+# Test the forward kinematics
+forward_kinematics(portHandler, packetHandler)
 
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
