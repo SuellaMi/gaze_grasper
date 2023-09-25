@@ -40,13 +40,10 @@ def set_target(color_code):
             return blocks[obj]
 
 
-# Checks if there are any objects detected and centered
+# Checks if there are any objects detected
 def check_view():
     count = pixy2.ccc_get_blocks(100, blocks)
-    if count > 0:
-        return center_target_width(blocks[0])
-    else:
-        return False
+    return count
 
 
 # Prints all the blocks recognized by the PixyCam
@@ -72,3 +69,4 @@ def center_target_width(block):
     block_x = block.m_x
     # Check if block is centered
     return frame_x == block_x
+
