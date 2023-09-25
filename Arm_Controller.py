@@ -123,7 +123,7 @@ for motor_id in DXL_ID:
         print("The current position is:" + str(present_position))
         print("The current velocity is:" + str(present_velocity))
 
-# Set the initial velocity
+    # Set the initial velocity
     for x in DXL_ID:
         set_speed(packetHandler, portHandler, x, 200)
 
@@ -139,6 +139,8 @@ while True:
     else:
         for x in range(90, 270):
             set_position(packetHandler, portHandler, DXL_ID[0], x)
+            if check_view() > 0:
+                break
 
 
 # The event that triggers the arm to move
