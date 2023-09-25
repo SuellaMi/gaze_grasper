@@ -3,6 +3,7 @@
 import os
 import tkinter as tk  # Used for the GUI
 
+from Pixy_Controller import *
 from kinematics import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
 
@@ -57,8 +58,8 @@ BAUD_RATE = 57600
 # ID: 4 controls the gripper
 DXL_ID = [1, 2, 3, 4]
 # Gripper codes
-OPEN: 100
-CLOSE: 220
+OPEN = 100
+CLOSE = 220
 
 # Use the actual port assigned to the U2D2
 # Linux: "/dev/ttyUSB*"
@@ -122,13 +123,22 @@ for motor_id in DXL_ID:
         print("The current position is:" + str(present_position))
         print("The current velocity is:" + str(present_velocity))
 
+# Set the initial velocity
+    for x in DXL_ID:
+        set_speed(packetHandler, portHandler, x, 150)
 
 # Set initial positions for motor: 2,3,4
-# set_position(packetHandler, portHandler, DXL_ID[1], )
-# set_position(packetHandler, portHandler, DXL_ID[2], )
-# set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
-# Searching for object with specific color code
-# while
+initial_position = inverse_kinematics([27.7, 6.6, 0])
+set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
+set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
+set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
+# Searching for an object in our environment
+while True:
+    if check_view() > 0:
+        break
+    else:
+        for x in range(90, 270):
+            set_position(packetHandler, portHandler, DXL_ID[0], x)
 
 
 # The event that triggers the arm to move
@@ -155,6 +165,8 @@ def start_moving(event):
             motor_value = motor_values[motor - 1]
             # Set new positions for each motor
             set_position(packetHandler, portHandler, motor, motor_value)
+    # Sleep for 1 msec, so that the motors can be brought in a new position before reading in again
+    time.sleep(1)
     # Test the forward kinematics
     forward_kinematics(packetHandler, portHandler)
 

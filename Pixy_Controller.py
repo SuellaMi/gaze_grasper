@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import ctypes
-
 import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
@@ -26,6 +24,7 @@ class Blocks(Structure):
 
 blocks = pixy2.BlockArray(100)
 
+
 # mylib = ctypes.CDLL()
 
 
@@ -41,18 +40,25 @@ def set_target(color_code):
             return blocks[obj]
 
 
+# Checks if there are any objects detected
+def check_view():
+    count = pixy2.ccc_get_blocks()
+    return count
+
+
 # Prints all the blocks recognized by the PixyCam
 def print_blocks():
     frame = 0
     count = pixy2.ccc_get_blocks(100, blocks)
 
-    if count > 0:
-        print('frame %3d:' % frame)
-        frame = frame + 1
-        for index in range(0, count):
-            print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (
-                blocks[index].m_signature, blocks[index].m_x, blocks[index].m_y, blocks[index].m_width,
-                blocks[index].m_height))
+    while 1:
+        if count > 0:
+            print('frame %3d:' % frame)
+            frame = frame + 1
+            for index in range(0, count):
+                print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (
+                    blocks[index].m_signature, blocks[index].m_x, blocks[index].m_y, blocks[index].m_width,
+                    blocks[index].m_height))
 
 
 # Pixy Cam follows given target
