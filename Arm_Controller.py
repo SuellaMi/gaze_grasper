@@ -151,7 +151,7 @@ while True:
             # Move motor until we are centered
             if (check_view() > 0) and (x_offset == 0.0):
                 break
-    break
+
 # Get the offset of the block we locked on
 # x_offset = offset_width()
 # Move motor until we are centered
