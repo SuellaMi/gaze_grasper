@@ -68,17 +68,13 @@ def inverse_kinematics(input_values):
 # Function that does the forward kinematics
 def forward_kinematics(packetHandler, portHandler):
     # Get current position for each motor
-    position1 = get_position(packetHandler, portHandler, 1)
-    position2 = get_position(packetHandler, portHandler, 2)
-    position3 = get_position(packetHandler, portHandler, 3)
-    print(str(position1) + str(position2) + str(position3))
-    degree1 = change_to_degrees(position1)
-    degree2 = change_to_degrees(position2)
-    degree3 = change_to_degrees(position3)
+    position1 = change_to_degrees(get_position(packetHandler, portHandler, 1))
+    position2 = change_to_degrees(get_position(packetHandler, portHandler, 2))
+    position3 = change_to_degrees(get_position(packetHandler, portHandler, 3))
     # Given joint angles (in degrees for this example)
-    theta1 = deg2rad(degree1 - 180)  # Convert to radians
-    theta2 = deg2rad(180 - degree2)  # Convert to radians
-    theta3 = deg2rad(degree3)  # Convert to radians, example value for the 3rd DOF
+    theta1 = deg2rad(position2 - 180)  # Convert to radians
+    theta2 = deg2rad(270 - position3)  # Convert to radians
+    theta3 = deg2rad(position1 - 180)  # Convert to radians, example value for the 3rd DOF
 
     # Forward kinematics equations
     x = link1 * cos(theta1) + (link2 * cos(theta1 + theta2))

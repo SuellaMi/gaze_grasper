@@ -145,7 +145,7 @@ def start_moving(event):
             # Set new positions for each motor
             set_position(packetHandler, portHandler, motor, motor_value)
     # Test the forward kinematics
-    forward_kinematics(portHandler, packetHandler)
+    forward_kinematics(packetHandler, portHandler)
 
 
 # ******************************************** Here starts the GUI**************************************************
