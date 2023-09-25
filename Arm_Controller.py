@@ -139,17 +139,18 @@ while True:
     # Get the offset of the block we locked on
     x_offset = offset_width()
     # If object can be directly tracked
-    if (check_view() > 0) and (x_offset == 0.0):
+    if x_offset == 0.0:
         break
     else:
         # Move to look for the object between 90 and 270 degrees
         for x in range(90, 270):
             set_position(packetHandler, portHandler, DXL_ID[0], x)
+            time.sleep(1)
             # Get the offset of the block we locked on
             x_offset = offset_width()
             print("The offset of x is: " + str(x_offset))
             # Move motor until we are centered
-            if (check_view() > 0) and (x_offset == 0.0):
+            if x_offset == 0.0:
                 break
 
 # Get the offset of the block we locked on
