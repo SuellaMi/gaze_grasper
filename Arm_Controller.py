@@ -146,7 +146,7 @@ while True:
 # Get the offset of the block we locked on
 x_offset = offset_width()
 # Move motor until we are centered
-print(x_offset)
+print("The offset of x is: " + str(x_offset))
 
 
 # The event that triggers the arm to move
