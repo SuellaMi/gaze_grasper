@@ -132,17 +132,20 @@ def start_moving(event):
         set_speed(packetHandler, portHandler, motor, velocity)
     # Get the input values for x,y,z
     input_values = get_input_values()
+    # Get the command to open or close the gripper
+    gripper_code = get_gripper()
     # Do the inverse kinematics for each input value to get the motor values
     motor_values = inverse_kinematics(input_values)
+    for motor in DXL_ID:
+        if motor == 4:
+            set_position(packetHandler, portHandler, motor, gripper_code)
+        else:
+            # Get the motor value for each motor
+            motor_value = motor_values[motor - 1]
+            # Set new positions for each motor
+            set_position(packetHandler, portHandler, motor, motor_value)
     # Test the forward kinematics
     forward_kinematics(portHandler, packetHandler)
-    # Check for forward kinematics
-
-    for motor in DXL_ID:
-        # Get the motor value for each motor
-        motor_value = motor_values[motor - 1]
-        # Set new positions for each motor
-        set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # ******************************************** Here starts the GUI**************************************************
@@ -156,7 +159,6 @@ l3 = tk.Label(root, text="Y:")
 l4 = tk.Label(root, text="Z:")
 l5 = tk.Label(root, text="Gripper:")
 l6 = tk.Label(root, text="Velocity:")
-
 
 # Display text in GUI
 l1.grid(row=0, column=0)
@@ -196,14 +198,20 @@ field5.grid(row=5, column=1)
 
 # Function to get the input for the motors from the GUI
 def get_input_values():
-    input_values = [float(field1.get()), float(field2.get()), float(field3.get()), float(field4.get())]
+    input_values = [float(field1.get()), float(field2.get()), float(field3.get())]
     return input_values
 
 
 # Function to get the velocity entry from GUI
 def get_velocity():
-    velocity = int(field4.get())
+    velocity = int(field5.get())
     return velocity
+
+
+# Function to get the command to open or close the gripper
+def get_gripper():
+    gripper_code = float(field4.get())
+    return gripper_code
 
 
 # Create OK button to start movement
