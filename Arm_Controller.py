@@ -135,20 +135,27 @@ set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
 set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
 # Searching for an object in our environment
-# If object can be directly tracked
-if (check_view() > 0) and (offset_width() == 0.0):
+if check_view() > 0:
     print("Object directly found and centered")
 else:
     # Move to look for the object between 90 and 270 degrees
     for x in range(90, 270):
         set_position(packetHandler, portHandler, DXL_ID[0], x)
-        if (check_view() > 0) and (offset_width() == 0.0):
+        if check_view() > 0:
             print("Object found and centered, offset is: " + str(offset_width()))
             break
 # Get the offset of the block we locked on
 x_offset = offset_width()
 # Move motor until we are centered
 print("The offset of x is: " + str(x_offset))
+# Get the current base motor position
+base_motor = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[0]))
+for x in range(base_motor, 270):
+    set_position(packetHandler, portHandler, DXL_ID[0], x)
+    # Move until offset == 0.0
+    if find_center() == 0.0:
+        print(find_center())
+        break
 # Grasping for an object
 # Read in data of ultrasonic sensor
 

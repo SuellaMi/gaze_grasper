@@ -42,6 +42,7 @@ def set_target(color_code):
 
 
 # Checks if there are any objects detected
+# !!!!!!!! change give an id for a block that you want to lock on
 def check_view():
     blocks = pixy2.BlockArray(100)
     count = pixy2.ccc_get_blocks(100, blocks)
@@ -68,6 +69,30 @@ def print_blocks():
 def display_block(index, block):
     print('Block[%3d]: I: %3d / S:%2d / X:%3d / Y:%3d / W:%3d / H:%3d / A:%3d' % (
         index, block.m_index, block.m_signature, block.m_x, block.m_y, block.m_width, block.m_height, block.m_age))
+
+
+def find_center():
+    blocks = pixy2.BlockArray(10)
+    frame = 0
+    locked_on_block = False
+    locked_block_index = 0
+
+    while True:
+        count = pixy2.ccc_get_blocks(1, blocks)
+
+        frame = frame + 1
+
+        if blocks[0].m_age > MINIMUM_BLOCK_AGE_TO_LOCK:
+            locked_block_index = blocks[0].m_index
+            locked_on_block = True
+
+        if locked_on_block:
+            for index in range(0, count):
+                if blocks[index].m_index == locked_block_index:
+                    print('Frame %3d: Locked' % frame)
+                    display_block(index, blocks[index])
+                    x_offset = (pixy2.get_frame_width() / 2) - blocks[index].m_x
+                    return x_offset
 
 
 # Pixy Cam checks if an object is centered in the frame width (x)
