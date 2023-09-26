@@ -143,9 +143,7 @@ else:
     # Move to look for the object between 90 and 270 degrees
     for x in range(90, 270):
         set_position(packetHandler, portHandler, DXL_ID[0], x)
-        time.sleep(0.1)
         if (check_view() > 0) and (offset_width() == 0.0):
-            time.sleep(1)
             print("Object found and centered, offset is: " + str(offset_width()))
             break
 # Get the offset of the block we locked on
