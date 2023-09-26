@@ -177,7 +177,9 @@ for x in range(int(current_position), 270):
     else:
         set_position(packetHandler, portHandler, DXL_ID[2], x)
         print("Object grasping not possible")
-print(get_ultrasonic_data())
+ultra = get_ultrasonic_data()
+print(ultra)
+forward_kinematics(packetHandler, portHandler, LINK1, LINK2+ultra)
 
 
 # The event that triggers the arm to move
