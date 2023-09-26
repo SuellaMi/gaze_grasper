@@ -78,7 +78,7 @@ def forward_kinematics(packetHandler, portHandler):
 
     # Forward kinematics equations
     x = link1 * cos(theta1) + (link2 * cos(theta1 + theta2))
-    y = -(link1 * sin(theta1) + (link2 * sin(theta1 + theta2)))
+    y = (-(link1 * sin(theta1) + (link2 * sin(theta1 + theta2)))) + 8
 
     # Compute r, the projection of the end effector on XY plane
     r = sqrt(x ** 2 + y ** 2)

@@ -3,6 +3,7 @@
 import os
 import tkinter as tk  # Used for the GUI
 
+import Ultrasonic_sensor
 from Pixy_Controller import *
 from kinematics import *
 from dynamixel_sdk import *  # Uses Dynamixel SDK library
@@ -146,6 +147,7 @@ else:
 forward_kinematics(packetHandler, portHandler)
 # Grasping for an object
 # Read in data of ultrasonic sensor
+Ultrasonic_sensor.main()
 
 
 # The event that triggers the arm to move
