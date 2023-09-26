@@ -180,7 +180,9 @@ for x in range(int(current_position), 270):
 ultra = get_ultrasonic_data()
 print(ultra)
 ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
+print(ik_values)
 motor_values = inverse_kinematics(ik_values, LINK1, LINK2 + ultra)
+print(motor_values)
 for motor in DXL_ID:
     if motor == 4:
         set_position(packetHandler, portHandler, motor, CLOSE)
