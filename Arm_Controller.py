@@ -170,13 +170,13 @@ for x in range(int(current_position), 180):
 # Check for block in quarter of frame
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
 for x in range(int(current_position), 270):
-    check_frame = check_quarter_frame()
-    if (check_frame[0]) <= (check_frame[1]):
-        print("Object grasping possible")
-        break
-    else:
-        set_position(packetHandler, portHandler, DXL_ID[2], x)
-        print("Object grasping not possible")
+    check_frame = check_quarter_frame()[0]
+    if check_frame[0]:
+        if (check_frame[1]) <= (check_frame[2]):
+            print("Object grasping possible")
+            break
+    set_position(packetHandler, portHandler, DXL_ID[2], x)
+    print("Object grasping not possible")
 ultra = get_ultrasonic_data()
 print(ultra)
 forward_kinematics(packetHandler, portHandler, LINK1, LINK2+ultra)
