@@ -135,9 +135,9 @@ for motor_id in DXL_ID:
         print("The current position is:" + str(present_position))
         print("The current velocity is:" + str(present_velocity))
 
-    # Set the initial velocity
-    for x in DXL_ID:
-        set_speed(packetHandler, portHandler, x, 500)
+# Set the initial velocity
+for x in DXL_ID:
+    set_speed(packetHandler, portHandler, x, 500)
 
 # Set initial positions for motor: 2,3,4
 initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
@@ -167,9 +167,12 @@ for x in range(int(current_position), 180):
         break
     else:
         set_position(packetHandler, portHandler, DXL_ID[1], x)
-# Check for block in quarter of frame
+# Get the current position of motor 3
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
+# Check for block in quarter of frame, so that we can grasp for the object
 for x in range(int(current_position), 270):
+    # Checks the frame and returns:
+    # [0]: True or False if an object has been detected or not
     check_frame = check_quarter_frame()
     if check_frame[0]:
         if (check_frame[1]) <= (check_frame[2]):
@@ -177,11 +180,15 @@ for x in range(int(current_position), 270):
             break
     set_position(packetHandler, portHandler, DXL_ID[2], x)
     print("Object grasping not possible")
+# Get ultrasonic sensor data
 ultra = get_ultrasonic_data()
 print(ultra)
+# Perform the forward kinematics to get the objects point
 ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
+# Perform the inverse kinematics to set the motors correctly
 motor_values = inverse_kinematics(ik_values, LINK1, LINK2 + ultra)
 for motor in DXL_ID:
+    # Grasping part
     if motor == 4:
         set_position(packetHandler, portHandler, motor, CLOSE)
     else:
