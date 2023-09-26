@@ -109,10 +109,12 @@ else:
     getch()
     quit()
 
+
 # Function to get the ultrasonic sensor data
 def get_ultrasonic_data():
     ultra_data = int((Ultrasonic_sensor.main()))
     return ultra_data
+
 
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
@@ -165,33 +167,13 @@ for x in range(int(current_position), 180):
         break
     else:
         set_position(packetHandler, portHandler, DXL_ID[1], x)
-# Check for block
-if check_view() <= 0:
-    current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
-    for x in range(int(current_position), 90, -1):
+# Check for block in quarter of frame
+current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
+for x in range(int(current_position), 270):
+    if check_quarter_frame()[0] >= check_quarter_frame()[1]:
+        break
+    else:
         set_position(packetHandler, portHandler, DXL_ID[2], x)
-        if check_view() > 0:
-            if (check_view() > 0) and ((find_center() > -5) and find_center() < 5):
-                print("Object directly found and centered")
-            else:
-                # Move to look for the object between 90 and 270 degrees and center it
-                for x in range(90, 270):
-                    set_position(packetHandler, portHandler, DXL_ID[0], x)
-                    # Check if object is centered between -5 and +5 pixels for the x coordinate
-                    if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
-                        print("Center found")
-                        break
-# Grasping for an object
-# fk_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra_data)
-# motor_values = inverse_kinematics(fk_values, LINK1, LINK2 + ultra_data)
-# for motor in DXL_ID:
-    # if motor == 4:
-        # set_position(packetHandler, portHandler, motor, CLOSE)
-    # else:
-        # Get the motor value for each motor
-        # motor_value = motor_values[motor - 1]
-        # Set new positions for each motor
-        # set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # The event that triggers the arm to move
