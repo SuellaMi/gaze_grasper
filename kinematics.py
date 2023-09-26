@@ -20,6 +20,7 @@ def change_to_degrees(data):
 # Function that does the inverse kinematics
 # The link lengths of our robotic arm in cm (link1=18cm, link2=27cm)
 def inverse_kinematics(input_values, link1, link2):
+    print("input:" + str(input_values))
     # Desired position of end effector (3D)
     x = input_values[0]
     y = input_values[1]
@@ -57,6 +58,7 @@ def inverse_kinematics(input_values, link1, link2):
     if (motor_values[2] < 0.0) or (motor_values[2] > 360.0):
         raise ValueError("Sorry, invalid output:" + str(motor_values[1]))
     # Print the calculated degrees
+    print("For IK, Link1:" + str(link1) + "Link2:" + str(link2))
     print("The new motor values in degrees are: " + str(motor_values))
     # Returns an array that includes the calculated theta values for each motor
     return motor_values
@@ -86,6 +88,7 @@ def forward_kinematics(packetHandler, portHandler, link1, link2):
     # Add point values to one array
     point_values = [x, y, z]
     # Print the values
+    print("For FK, Link1:" + str(link1) + "Link2:" + str(link2))
     print("The points we are getting from the forward kinematics are: " + str(point_values))
     # Return target points
     return point_values
