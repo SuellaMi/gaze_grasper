@@ -154,16 +154,16 @@ forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 ultra_data = int((Ultrasonic_sensor.main()))
 print(ultra_data)
 # Grasping for an object
-fk_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra_data)
-motor_values = inverse_kinematics(fk_values, LINK1, LINK2 + ultra_data)
-for motor in DXL_ID:
-    if motor == 4:
-        set_position(packetHandler, portHandler, motor, CLOSE)
-    else:
+# fk_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra_data)
+# motor_values = inverse_kinematics(fk_values, LINK1, LINK2 + ultra_data)
+# for motor in DXL_ID:
+    # if motor == 4:
+        # set_position(packetHandler, portHandler, motor, CLOSE)
+    # else:
         # Get the motor value for each motor
-        motor_value = motor_values[motor - 1]
+        # motor_value = motor_values[motor - 1]
         # Set new positions for each motor
-        set_position(packetHandler, portHandler, motor, motor_value)
+        # set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # The event that triggers the arm to move
