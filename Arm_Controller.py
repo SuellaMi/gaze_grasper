@@ -170,7 +170,7 @@ for x in range(int(current_position), 180):
 # Check for block in quarter of frame
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
 for x in range(int(current_position), 270):
-    check_frame = check_quarter_frame()[0]
+    check_frame = check_quarter_frame()
     if check_frame[0]:
         if (check_frame[1]) <= (check_frame[2]):
             print("Object grasping possible")
@@ -179,7 +179,16 @@ for x in range(int(current_position), 270):
     print("Object grasping not possible")
 ultra = get_ultrasonic_data()
 print(ultra)
-forward_kinematics(packetHandler, portHandler, LINK1, LINK2+ultra)
+ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
+motor_values = inverse_kinematics(ik_values, LINK1, LINK2 + ultra)
+for motor in DXL_ID:
+    if motor == 4:
+        set_position(packetHandler, portHandler, motor, CLOSE)
+    else:
+        # Get the motor value for each motor
+        motor_value = motor_values[motor - 1]
+        # Set new positions for each motor
+        set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # The event that triggers the arm to move
