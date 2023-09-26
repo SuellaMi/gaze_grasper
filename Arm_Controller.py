@@ -171,9 +171,11 @@ for x in range(int(current_position), 180):
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
 for x in range(int(current_position), 270):
     if check_quarter_frame()[0] >= check_quarter_frame()[1]:
+        print("Object grasping possible")
         break
     else:
         set_position(packetHandler, portHandler, DXL_ID[2], x)
+        print("Object grasping not possible")
 
 
 # The event that triggers the arm to move
