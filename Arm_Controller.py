@@ -73,6 +73,10 @@ ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 CHANGE_TO_VELOCITY = 1  # Velocity Control Mode
 CHANGE_TO_POSITION = 3  # Position Control Mode
 
+# Our link lengths in cm
+LINK1 = 18
+LINK2 = 27
+
 # Define goal positions [0, 4095]
 dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,
                      DXL_MAXIMUM_POSITION_VALUE]  # Goal position
@@ -105,6 +109,13 @@ else:
     getch()
     quit()
 
+
+# Function to get the ultrasonic sensor data
+def get_ultrasonic_data():
+    ultra_data = int((Ultrasonic_sensor.main()))
+    return ultra_data
+
+
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
@@ -124,12 +135,12 @@ for motor_id in DXL_ID:
         print("The current position is:" + str(present_position))
         print("The current velocity is:" + str(present_velocity))
 
-    # Set the initial velocity
-    for x in DXL_ID:
-        set_speed(packetHandler, portHandler, x, 500)
+# Set the initial velocity
+for x in DXL_ID:
+    set_speed(packetHandler, portHandler, x, 500)
 
 # Set initial positions for motor: 2,3,4
-initial_position = inverse_kinematics([27.7, 6.6, 0])
+initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
 set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
 set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
@@ -140,14 +151,51 @@ else:
     # Move to look for the object between 90 and 270 degrees and center it
     for x in range(90, 270):
         set_position(packetHandler, portHandler, DXL_ID[0], x)
+        # Check if object is centered between -5 and +5 pixels for the x coordinate
         if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
             print("Center found")
             break
 # Print the forward kinematics values
-forward_kinematics(packetHandler, portHandler)
-# Grasping for an object
+forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 # Read in data of ultrasonic sensor
-ultra_data = Ultrasonic_sensor.main()
+ultra = get_ultrasonic_data()
+print(ultra)
+# Falling down of gripper
+current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
+for x in range(int(current_position), 180):
+    if get_ultrasonic_data() < 11:
+        break
+    else:
+        set_position(packetHandler, portHandler, DXL_ID[1], x)
+# Get the current position of motor 3
+current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
+# Check for block in quarter of frame, so that we can grasp for the object
+for x in range(int(current_position), 270):
+    # Checks the frame and returns:
+    # [0]: True or False if an object has been detected or not
+    check_frame = check_quarter_frame()
+    if check_frame[0]:
+        if (check_frame[1]) <= (check_frame[2]):
+            print("Object grasping possible")
+            break
+    set_position(packetHandler, portHandler, DXL_ID[2], x)
+    print("Object grasping not possible")
+# Get ultrasonic sensor data
+ultra = get_ultrasonic_data()
+print(ultra)
+# Perform the forward kinematics to get the objects point
+ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
+# Perform the inverse kinematics to set the motors correctly
+motor_values = inverse_kinematics(ik_values, LINK1, LINK2 + ultra)
+for motor in DXL_ID:
+    # Grasping part
+    if motor == 4:
+        set_position(packetHandler, portHandler, motor, CLOSE)
+    else:
+        # Get the motor value for each motor
+        motor_value = motor_values[motor - 1]
+        # Set new positions for each motor
+        set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # The event that triggers the arm to move
@@ -165,7 +213,7 @@ def start_moving(event):
         # Set velocity
         set_speed(packetHandler, portHandler, motor, velocity)
     # Do the inverse kinematics for each input value to get the motor values
-    motor_values = inverse_kinematics(input_values)
+    motor_values = inverse_kinematics(input_values, LINK1, LINK2)
     for motor in DXL_ID:
         if motor == 4:
             set_position(packetHandler, portHandler, motor, gripper_code)
@@ -177,7 +225,7 @@ def start_moving(event):
     # Sleep for 1 msec, so that the motors can be brought in a new position before reading in again
     time.sleep(1)
     # Test the forward kinematics
-    forward_kinematics(packetHandler, portHandler)
+    forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 
 
 # ******************************************** Here starts the GUI**************************************************

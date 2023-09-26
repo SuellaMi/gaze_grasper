@@ -54,6 +54,19 @@ def check_view():
     return count
 
 
+def check_quarter_frame():
+    blocks = pixy2.BlockArray(1)
+    count = pixy2.ccc_get_blocks(1, blocks)
+    if count > 0:
+        frame_y = pixy2.get_frame_height()
+        quarter_frame = frame_y - (frame_y / 4)
+        obj_y = blocks[0].m_y
+        print(quarter_frame, obj_y)
+        return [True, quarter_frame, obj_y]
+    else:
+        return [False]
+
+
 # Prints all the blocks recognized by the PixyCam
 def print_blocks():
     blocks = pixy2.BlockArray(100)
