@@ -1,7 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import time
 import tkinter as tk  # Used for the GUI
 
 from Pixy_Controller import *
