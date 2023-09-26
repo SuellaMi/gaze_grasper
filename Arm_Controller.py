@@ -170,7 +170,8 @@ for x in range(int(current_position), 180):
 # Check for block in quarter of frame
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
 for x in range(int(current_position), 270):
-    if check_quarter_frame()[0] >= check_quarter_frame()[1]:
+    check_frame = check_quarter_frame()
+    if (check_frame[0]) <= (check_frame[1]):
         print("Object grasping possible")
         break
     else:
