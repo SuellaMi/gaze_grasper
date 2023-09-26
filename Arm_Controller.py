@@ -73,6 +73,10 @@ ADDR_OPERATING_MODE = 11  # Address for changing the operating mode
 CHANGE_TO_VELOCITY = 1  # Velocity Control Mode
 CHANGE_TO_POSITION = 3  # Position Control Mode
 
+# Our link lengths in cm
+LINK1 = 18
+LINK2 = 27
+
 # Define goal positions [0, 4095]
 dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE,
                      DXL_MAXIMUM_POSITION_VALUE]  # Goal position
@@ -129,7 +133,7 @@ for motor_id in DXL_ID:
         set_speed(packetHandler, portHandler, x, 500)
 
 # Set initial positions for motor: 2,3,4
-initial_position = inverse_kinematics([27.7, 6.6, 0])
+initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
 set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
 set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
@@ -145,13 +149,13 @@ else:
             print("Center found")
             break
 # Print the forward kinematics values
-forward_kinematics(packetHandler, portHandler)
+forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 # Read in data of ultrasonic sensor
 ultra_data = int((Ultrasonic_sensor.main()))
 print(ultra_data)
 # Grasping for an object
-fk_values = forward_kinematics(packetHandler, portHandler, link2=27+ultra_data)
-motor_values = inverse_kinematics(fk_values, link2=27+ultra_data)
+fk_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra_data)
+motor_values = inverse_kinematics(fk_values, LINK1, LINK2 + ultra_data)
 for motor in DXL_ID:
     if motor == 4:
         set_position(packetHandler, portHandler, motor, CLOSE)
@@ -177,7 +181,7 @@ def start_moving(event):
         # Set velocity
         set_speed(packetHandler, portHandler, motor, velocity)
     # Do the inverse kinematics for each input value to get the motor values
-    motor_values = inverse_kinematics(input_values)
+    motor_values = inverse_kinematics(input_values, LINK1, LINK2)
     for motor in DXL_ID:
         if motor == 4:
             set_position(packetHandler, portHandler, motor, gripper_code)
@@ -189,7 +193,7 @@ def start_moving(event):
     # Sleep for 1 msec, so that the motors can be brought in a new position before reading in again
     time.sleep(1)
     # Test the forward kinematics
-    forward_kinematics(packetHandler, portHandler)
+    forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 
 
 # ******************************************** Here starts the GUI**************************************************

@@ -19,7 +19,7 @@ def change_to_degrees(data):
 
 # Function that does the inverse kinematics
 # The link lengths of our robotic arm in cm (link1=18cm, link2=27cm)
-def inverse_kinematics(input_values, link1=18, link2=27):
+def inverse_kinematics(input_values, link1, link2):
     # Desired position of end effector (3D)
     x = input_values[0]
     y = input_values[1]
@@ -64,7 +64,7 @@ def inverse_kinematics(input_values, link1=18, link2=27):
 
 # Function that does the forward kinematics
 # The link lengths of our robotic arm in cm (link1=18cm, link2=27cm)
-def forward_kinematics(packetHandler, portHandler, link1=18, link2=27):
+def forward_kinematics(packetHandler, portHandler, link1, link2):
     # Get current position for each motor
     position1 = change_to_degrees(get_position(packetHandler, portHandler, 1))
     position2 = change_to_degrees(get_position(packetHandler, portHandler, 2))
