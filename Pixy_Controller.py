@@ -92,4 +92,5 @@ def find_center():
                     print('Frame %3d: Locked' % frame)
                     display_block(index, blocks[index])
                     x_offset = (pixy2.get_frame_width() / 2) - blocks[index].m_x
+                    # y_offset = (pixy2.get_frame_height() / 2) - blocks[index].m_y
                     return x_offset

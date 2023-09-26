@@ -125,16 +125,14 @@ for motor_id in DXL_ID:
 
     # Set the initial velocity
     for x in DXL_ID:
-        if x == 1:
-            set_speed(packetHandler, portHandler, x, 90)
-        set_speed(packetHandler, portHandler, x, 200)
+        set_speed(packetHandler, portHandler, x, 500)
 
 # Set initial positions for motor: 2,3,4
 initial_position = inverse_kinematics([27.7, 6.6, 0])
 set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
 set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
-# Searching for an object in our environment
+# Searching for an object in our environment and check if its already centered
 if (check_view() > 0) and ((find_center() > -5) and find_center() < 5):
     print("Object directly found and centered")
 else:
@@ -144,14 +142,8 @@ else:
         if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
             print("Center found")
             break
-# Get the current base motor position
-# base_motor = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[0]))
-# for x in range(base_motor, 270):
-#    set_position(packetHandler, portHandler, DXL_ID[0], x)
-    # Move until offset == 0.0
-#    if (find_center() > -5) and (find_center() < 5):
-#        break
-
+# Print the forward kinematics values
+forward_kinematics(packetHandler, portHandler)
 # Grasping for an object
 # Read in data of ultrasonic sensor
 
