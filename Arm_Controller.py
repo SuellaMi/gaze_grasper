@@ -137,7 +137,7 @@ for motor_id in DXL_ID:
 
 # Set the initial velocity
 for x in DXL_ID:
-    set_speed(packetHandler, portHandler, x, 500)
+    set_speed(packetHandler, portHandler, x, 250)
 
 # Set initial positions for motor: 2,3,4
 initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
@@ -145,16 +145,13 @@ set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
 set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
 # Searching for an object in our environment and check if its already centered
-if (check_view() > 0) and ((find_center() > -5) and find_center() < 5):
-    print("Object directly found and centered")
-else:
-    # Move to look for the object between 90 and 270 degrees and center it
-    for x in range(90, 270):
-        set_position(packetHandler, portHandler, DXL_ID[0], x)
-        # Check if object is centered between -5 and +5 pixels for the x coordinate
-        if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
-            print("Center found")
-            break
+# Move to look for the object between 90 and 270 degrees and center it
+for x in range(90, 270):
+    set_position(packetHandler, portHandler, DXL_ID[0], x)
+    # Check if object is centered between -5 and +5 pixels for the x coordinate
+    if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
+        print("Center found")
+        break
 # Print the forward kinematics values
 forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 # Read in data of ultrasonic sensor
