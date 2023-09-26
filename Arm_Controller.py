@@ -109,6 +109,11 @@ else:
     getch()
     quit()
 
+# Function to get the ultrasonic sensor data
+def get_ultrasonic_data():
+    ultra_data = int((Ultrasonic_sensor.main()))
+    return ultra_data
+
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
 for motor_id in DXL_ID:
@@ -151,8 +156,15 @@ else:
 # Print the forward kinematics values
 forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 # Read in data of ultrasonic sensor
-ultra_data = int((Ultrasonic_sensor.main()))
-print(ultra_data)
+ultra = int((Ultrasonic_sensor.main()))
+print(ultra)
+# Falling down of gripper
+current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
+for x in range(current_position, 180):
+    if get_ultrasonic_data() < 11:
+        break
+    else:
+        set_position(packetHandler, portHandler, DXL_ID[1], x)
 # Grasping for an object
 # fk_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra_data)
 # motor_values = inverse_kinematics(fk_values, LINK1, LINK2 + ultra_data)
