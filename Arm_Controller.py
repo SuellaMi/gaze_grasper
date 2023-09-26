@@ -158,7 +158,7 @@ else:
 # Print the forward kinematics values
 forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 # Read in data of ultrasonic sensor
-ultra = int((Ultrasonic_sensor.main()))
+ultra = get_ultrasonic_data()
 print(ultra)
 # Falling down of gripper
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
@@ -177,6 +177,7 @@ for x in range(int(current_position), 270):
     else:
         set_position(packetHandler, portHandler, DXL_ID[2], x)
         print("Object grasping not possible")
+print(get_ultrasonic_data())
 
 
 # The event that triggers the arm to move
