@@ -160,7 +160,7 @@ ultra = int((Ultrasonic_sensor.main()))
 print(ultra)
 # Falling down of gripper
 current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
-for x in range(current_position, 180):
+for x in range(int(current_position), 180):
     if get_ultrasonic_data() < 11:
         break
     else:
