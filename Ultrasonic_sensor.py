@@ -67,9 +67,8 @@ def main():
     sonar = UltrasonicRanger(18)
 
     print('Detecting distance...')
-    while True:
-        print('{} cm'.format(sonar.get_distance()))
-        return sonar.get_distance()
+    # print('{} cm'.format(sonar.get_distance()))
+    return sonar.get_distance()
 
 
 if __name__ == '__main__':

@@ -147,7 +147,8 @@ else:
 # Print the forward kinematics values
 forward_kinematics(packetHandler, portHandler)
 # Read in data of ultrasonic sensor
-ultra_data = Ultrasonic_sensor.main()
+ultra_data = int((Ultrasonic_sensor.main()))
+print(ultra_data)
 # Grasping for an object
 fk_values = forward_kinematics(packetHandler, portHandler, link2=27+ultra_data)
 motor_values = inverse_kinematics(fk_values, link2=27+ultra_data)
