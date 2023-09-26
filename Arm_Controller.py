@@ -140,14 +140,25 @@ else:
     # Move to look for the object between 90 and 270 degrees and center it
     for x in range(90, 270):
         set_position(packetHandler, portHandler, DXL_ID[0], x)
+        # Check if object is centered between -5 and +5 pixels for the x coordinate
         if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
             print("Center found")
             break
 # Print the forward kinematics values
 forward_kinematics(packetHandler, portHandler)
-# Grasping for an object
 # Read in data of ultrasonic sensor
 ultra_data = Ultrasonic_sensor.main()
+# Grasping for an object
+fk_values = forward_kinematics(packetHandler, portHandler, link2=27+ultra_data)
+motor_values = inverse_kinematics(fk_values, link2=27+ultra_data)
+for motor in DXL_ID:
+    if motor == 4:
+        set_position(packetHandler, portHandler, motor, CLOSE)
+    else:
+        # Get the motor value for each motor
+        motor_value = motor_values[motor - 1]
+        # Set new positions for each motor
+        set_position(packetHandler, portHandler, motor, motor_value)
 
 
 # The event that triggers the arm to move
