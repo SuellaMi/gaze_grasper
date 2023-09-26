@@ -69,7 +69,7 @@ def main():
     print('Detecting distance...')
     while True:
         print('{} cm'.format(sonar.get_distance()))
-        time.sleep(1)
+        return sonar.get_distance()
 
 
 if __name__ == '__main__':

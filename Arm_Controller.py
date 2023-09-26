@@ -147,7 +147,7 @@ else:
 forward_kinematics(packetHandler, portHandler)
 # Grasping for an object
 # Read in data of ultrasonic sensor
-Ultrasonic_sensor.main()
+ultra_data = Ultrasonic_sensor.main()
 
 
 # The event that triggers the arm to move
