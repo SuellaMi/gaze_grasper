@@ -139,7 +139,7 @@ for motor_id in DXL_ID:
 
 # Set the initial velocity
 for x in DXL_ID:
-    set_speed(packetHandler, portHandler, x, 250)
+    set_speed(packetHandler, portHandler, x, 300)
 
 
 def automatic_moving():
@@ -198,13 +198,13 @@ def automatic_moving():
             motor_value = motor_values[motor - 1]
             # Set new positions for each motor
             set_position(packetHandler, portHandler, motor, motor_value)
-    time.sleep(1)
+    time.sleep(0.1)
     # After grasping the object we will go back to the initial position for motor 2 and 3
     print("Grasping succeeded we are now moving to the home position again.")
     initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
     set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
     set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
-    time.sleep(1)
+    time.sleep(0.1)
     print("Home position: Succeeded")
     set_position(packetHandler, portHandler, DXL_ID[0], 270.0)
     print("Releasing location found.")
@@ -212,11 +212,10 @@ def automatic_moving():
     set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
     print("Object released.")
     # Set initial positions for motor: 2,3,4
-    initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
-    set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
-    set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
+    set_position(packetHandler, portHandler, DXL_ID[1], 100)
+    set_position(packetHandler, portHandler, DXL_ID[2], 165)
     set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
-    time.sleep(3)
+    time.sleep(0.3)
 
 
 automatic_moving()
