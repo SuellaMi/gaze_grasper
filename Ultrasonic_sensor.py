@@ -50,7 +50,7 @@ class UltrasonicRanger(object):
         if dt > 530:
             return None
 
-        distance = ((t2 - t1) * 1000000 / 29 / 2)  # cm
+        distance = ((t2 - t1) * 1000000 / 29 / 2) - 4  # cm
 
         return distance
 

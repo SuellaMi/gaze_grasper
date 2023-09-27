@@ -186,7 +186,8 @@ print(ultra)
 # Perform the forward kinematics to get the objects point
 ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
 # Perform the inverse kinematics to set the motors correctly
-motor_values = inverse_kinematics(ik_values, LINK1, LINK2 + ultra)
+motor_values = inverse_kinematics(ik_values, LINK1, LINK2)
+time.sleep(1)
 for motor in DXL_ID:
     # Grasping part
     if motor == 4:
@@ -196,6 +197,7 @@ for motor in DXL_ID:
         motor_value = motor_values[motor - 1]
         # Set new positions for each motor
         set_position(packetHandler, portHandler, motor, motor_value)
+time.sleep(3)
 
 
 # The event that triggers the arm to move
@@ -228,6 +230,7 @@ def start_moving(event):
     forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
 
 
+time.sleep(3)
 # ******************************************** Here starts the GUI**************************************************
 # Initialize window
 root = tk.Tk()
