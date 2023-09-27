@@ -116,6 +116,7 @@ def get_ultrasonic_data():
     return ultra_data
 
 
+# Here starts the bluetooth
 bluetooth_loop()
 
 # Enable Dynamixel Torque for each motor
