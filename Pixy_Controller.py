@@ -119,9 +119,17 @@ def get_Frame():
 # Creates the Bluetooth loop by creating a BluetoothServe4r, where data were received.
 # It gets the integer from the Android Application.
 def bluetooth_loop():
-    s = BluetoothServer(data_received)
-    s.start()
+    server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    server_sock.bind(("", bluetooth.PORT_ANY))
+    server_sock.listen(1)
+    port = server_sock.getsockname()[1]
 
+    uuid ="00001101-0000-1000-8000-00805f9b34fb"
+    bluetooth.advertise_service(server_sock, "SampleServer", service_id=uuid,
+                                service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
+                                profiles=[bluetooth.SERIAL_PORT_PROFILE])
 
-def data_received(data):
-    BluetoothServer.send(data)
+    print("Waiting for connection on RFCOMM channel", port)
+    client_sock, client_info = server_sock.accept()
+    print("Accepted connection from", client_info)
+
