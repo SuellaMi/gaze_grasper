@@ -208,6 +208,7 @@ print("Releasing location found.")
 print("Release object.")
 set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
 print("Object released.")
+time.sleep(3)
 
 
 # The event that triggers the arm to move
