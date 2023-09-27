@@ -5,7 +5,6 @@ import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
 import bluetooth
-import uuid as UUID
 
 # Pixy2 Python SWIG get blocks example #
 
