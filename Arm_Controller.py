@@ -141,76 +141,85 @@ for motor_id in DXL_ID:
 for x in DXL_ID:
     set_speed(packetHandler, portHandler, x, 250)
 
-# Set initial positions for motor: 2,3,4
-initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
-set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
-set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
-set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
-# Searching for an object in our environment and check if its already centered
-# Move to look for the object between 90 and 270 degrees and center it
-for x in range(90, 270):
-    set_position(packetHandler, portHandler, DXL_ID[0], x)
-    # Check if object is centered between -5 and +5 pixels for the x coordinate
-    if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
-        print("Center found")
-        break
-# Print the forward kinematics values
-forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
-# Read in data of ultrasonic sensor
-ultra = get_ultrasonic_data()
-print(ultra)
-# Falling down of gripper
-current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
-for x in range(int(current_position), 180):
-    if get_ultrasonic_data() < 11:
-        break
-    else:
-        set_position(packetHandler, portHandler, DXL_ID[1], x)
-# Get the current position of motor 3
-current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
-# Check for block in quarter of frame, so that we can grasp for the object
-for x in range(int(current_position), 270):
-    # Checks the frame and returns:
-    # [0]: True or False if an object has been detected or not
-    check_frame = check_quarter_frame()
-    if check_frame[0]:
-        if (check_frame[1]) <= (check_frame[2]):
-            print("Object grasping possible")
+
+def automatic_moving():
+    # Set initial positions for motor: 2,3,4
+    initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
+    set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
+    set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
+    set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
+    # Searching for an object in our environment and check if its already centered
+    # Move to look for the object between 90 and 270 degrees and center it
+    for x in range(90, 270):
+        set_position(packetHandler, portHandler, DXL_ID[0], x)
+        # Check if object is centered between -5 and +5 pixels for the x coordinate
+        if (check_view() > 0) and ((find_center() > -5) and (find_center() < 5)):
+            print("Center found")
             break
-    set_position(packetHandler, portHandler, DXL_ID[2], x)
-    print("Object grasping not possible")
-# Get ultrasonic sensor data
-ultra = get_ultrasonic_data()
-print(ultra)
-# Perform the forward kinematics to get the objects point
-ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
-# Perform the inverse kinematics to set the motors correctly
-motor_values = inverse_kinematics(ik_values, LINK1, LINK2)
-time.sleep(1)
-for motor in DXL_ID:
-    # Grasping part
-    if motor == 4:
-        set_position(packetHandler, portHandler, motor, CLOSE)
-    else:
-        # Get the motor value for each motor
-        motor_value = motor_values[motor - 1]
-        # Set new positions for each motor
-        set_position(packetHandler, portHandler, motor, motor_value)
-time.sleep(1)
-# After grasping the object we will go back to the initial position for motor 2 and 3
-print("Grasping succeeded we are now moving to the home position again.")
-initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
-set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
-set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
-time.sleep(1)
-print("Home position: Succeeded")
-set_position(packetHandler, portHandler, DXL_ID[0], 270.0)
-print("Releasing location found.")
-print("Release object.")
-time.sleep(1)
-set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
-print("Object released.")
-time.sleep(3)
+    # Print the forward kinematics values
+    forward_kinematics(packetHandler, portHandler, LINK1, LINK2)
+    # Read in data of ultrasonic sensor
+    ultra = get_ultrasonic_data()
+    print(ultra)
+    # Falling down of gripper
+    current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[1]))
+    for x in range(int(current_position), 180):
+        if get_ultrasonic_data() < 11:
+            break
+        else:
+            set_position(packetHandler, portHandler, DXL_ID[1], x)
+    # Get the current position of motor 3
+    current_position = change_to_degrees(get_position(packetHandler, portHandler, DXL_ID[2]))
+    # Check for block in quarter of frame, so that we can grasp for the object
+    for x in range(int(current_position), 270):
+        # Checks the frame and returns:
+        # [0]: True or False if an object has been detected or not
+        check_frame = check_quarter_frame()
+        if check_frame[0]:
+            if (check_frame[1]) <= (check_frame[2]):
+                print("Object grasping possible")
+                break
+        set_position(packetHandler, portHandler, DXL_ID[2], x)
+        print("Object grasping not possible")
+    # Get ultrasonic sensor data
+    ultra = get_ultrasonic_data()
+    print(ultra)
+    # Perform the forward kinematics to get the objects point
+    ik_values = forward_kinematics(packetHandler, portHandler, LINK1, LINK2 + ultra)
+    # Perform the inverse kinematics to set the motors correctly
+    motor_values = inverse_kinematics(ik_values, LINK1, LINK2)
+    time.sleep(1)
+    for motor in DXL_ID:
+        # Grasping part
+        if motor == 4:
+            set_position(packetHandler, portHandler, motor, CLOSE)
+        else:
+            # Get the motor value for each motor
+            motor_value = motor_values[motor - 1]
+            # Set new positions for each motor
+            set_position(packetHandler, portHandler, motor, motor_value)
+    time.sleep(1)
+    # After grasping the object we will go back to the initial position for motor 2 and 3
+    print("Grasping succeeded we are now moving to the home position again.")
+    initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
+    set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
+    set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
+    time.sleep(1)
+    print("Home position: Succeeded")
+    set_position(packetHandler, portHandler, DXL_ID[0], 270.0)
+    print("Releasing location found.")
+    print("Release object.")
+    set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
+    print("Object released.")
+    # Set initial positions for motor: 2,3,4
+    initial_position = inverse_kinematics([27.7, 6.6, 0], LINK1, LINK2)
+    set_position(packetHandler, portHandler, DXL_ID[1], initial_position[1])
+    set_position(packetHandler, portHandler, DXL_ID[2], initial_position[2])
+    set_position(packetHandler, portHandler, DXL_ID[3], OPEN)
+    time.sleep(3)
+
+
+automatic_moving()
 
 
 # The event that triggers the arm to move
