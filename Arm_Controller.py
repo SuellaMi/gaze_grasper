@@ -116,7 +116,7 @@ def get_ultrasonic_data():
     return ultra_data
 
 
-bluetooth_loop()
+# bluetooth_loop()
 
 # Enable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
