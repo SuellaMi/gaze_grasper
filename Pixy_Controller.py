@@ -4,8 +4,7 @@ import ctypes
 import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
-import bluedot
-from bluedot.btcomm import BluetoothServer
+import bluetooth
 import uuid as UUID
 
 # Pixy2 Python SWIG get blocks example #
@@ -28,9 +27,6 @@ class Blocks(Structure):
 
 
 MINIMUM_BLOCK_AGE_TO_LOCK = 30
-
-
-# mylib = ctypes.CDLL()
 
 
 # Searches for an object in our frame we can lock on
