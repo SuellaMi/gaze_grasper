@@ -4,6 +4,7 @@ import ctypes
 import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
+import bluetooth
 import bluedot
 from bluedot.btcomm import BluetoothServer
 import uuid as UUID
@@ -120,12 +121,18 @@ def get_Frame():
     return clibrary.get_raw_frame()
 
 
-# Creates the Bluetooth loop by creating a BluetoothServe4r, where data were received.
+# Creates the Bluetooth loop by creating a BluetoothServer, where data were received.
 # It gets the integer from the Android Application.
 def bluetooth_loop():
-    s = BluetoothServer(data_received)
-    s.start()
+    server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    server_sock.bind(("", bluetooth.PORT_ANY))
+    server_sock.listen(1)
+    port = server_sock.getsockname()[1]
+    uuid = "00001101-0000-1000-8000-00805f9b34fb"
+    bluetooth.advertise_service(server_sock, "SampleServer", service_id=uuid,
+                                service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
+                                profiles=[bluetooth.SERIAL_PORT_PROFILE])
+    print("Waiting for connection on RFCOMM channel", port)
+    client_sock, client_info = server_sock.accept()
+    print("Accepted connection from", client_info)
 
-
-def data_received(data):
-    BluetoothServer.send(data)
