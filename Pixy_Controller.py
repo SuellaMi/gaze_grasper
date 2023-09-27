@@ -5,7 +5,8 @@ import ctypes
 import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
-import bluetooth
+import bluedot
+from bluedot.btcomm import BluetoothServer
 import uuid as UUID
 
 # Pixy2 Python SWIG get blocks example #
@@ -113,37 +114,20 @@ def find_center():
                     # y_offset = (pixy2.get_frame_height() / 2) - blocks[index].m_y
                     return x_offset
 
-#Get the frame from the Pixy Camera. Returns the frame
+
+# Get the frame from the Pixy Camera. Returns the frame
 def get_Frame():
-    clibrary=ctypes.CDLL("File")
+    clibrary = ctypes.CDLL("File")
     return clibrary.get_raw_frame()
 
-#Creates the Bluetooth loop, where data were received and sended.
-#It gets the integer from the Android Application Gaze Tracker and sends the frame to
-#the Application.
+
+# Creates the Bluetooth loop, where data were received and sended.
+# It gets the integer from the Android Application Gaze Tracker and sends the frame to
+# the Application.
 def bluetooth_loop():
-    server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    port = 22
-    server_sock.bind(("", port))
-    server_sock.listen(1)
-    client_sock, address = server_sock.accept()
-    # uuid = UUID.uuid4()
-    uuid = UUID.UUID('27b7d1da-08c7-4505-a6d1-2459987e5e2d')
-    bluetooth.advertise_service(server_sock, "Device Server", service_id=uuid)
-    print("Conexion realizada con: ", address)
-    while True:
-        recvdata = client_sock.recv(1024)
-        print("Recibe: %s" % recvdata)
-        doble = int(recvdata)
-        print("Enviar doble: %s" % doble)
-        client_sock.send(get_Frame())
-        client_sock.send("\n")
-        if (recvdata == "0"):
-            print("Finalizado.")
-            break
-
-    client_sock.close()
-    server_sock.close()
+    s = BluetoothServer(data_received)
+    s.start()
 
 
-
+def data_received(data):
+    BluetoothServer.send(data)
