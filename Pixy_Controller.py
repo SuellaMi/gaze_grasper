@@ -121,9 +121,8 @@ def get_Frame():
     return clibrary.get_raw_frame()
 
 
-# Creates the Bluetooth loop, where data were received and sended.
-# It gets the integer from the Android Application Gaze Tracker and sends the frame to
-# the Application.
+# Creates the Bluetooth loop by creating a BluetoothServe4r, where data were received.
+# It gets the integer from the Android Application.
 def bluetooth_loop():
     s = BluetoothServer(data_received)
     s.start()
