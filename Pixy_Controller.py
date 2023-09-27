@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import ctypes
-
 import pixy2.build.python_demos.pixy as pixy2
 from ctypes import *
 
