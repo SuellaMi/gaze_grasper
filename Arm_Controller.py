@@ -300,8 +300,9 @@ MovingBtn.bind('<ButtonPress-1>', start_moving)
 tk.Button(root, text="Quit", command=root.destroy).grid(row=6, column=1)
 
 # Infinite loop which can be terminated by keyboard or mouse interrupt
-root.mainloop()
 bluetooth_loop()
+root.mainloop()
+
 
 # Disable Dynamixel Torque for each motor
 # DXL_ID is an array which includes the different Dynamixel motor ID's
